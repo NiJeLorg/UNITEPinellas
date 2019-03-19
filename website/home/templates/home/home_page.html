@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags %}
+
+{% block body_class %}w-100 sans-serif{% endblock %}
+
+{% block content %}
+    {{ page.body|richtext }}
+{% endblock %}
