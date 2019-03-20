@@ -5,6 +5,10 @@
 {% block body_class %}w-100 sans-serif{% endblock %}
 
 {% block content %}
+    {% if request.GET.tag|length %}
+        <h1 class="f1 lh-title">Showing pages tagged "{{ request.GET.tag }}"</h1>
+    {% endif %}
+
     {% for post in blogpages %}
         {% with post=post.specific %}
             <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
@@ -13,6 +17,8 @@
             <p>{{ post.intro }}</p>
             {{ post.body|richtext }}
         {% endwith %}
+    {% empty %}
+        No pages found with that tag.
     {% endfor %}
 
 {% endblock %}
