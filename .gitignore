@@ -108,4 +108,3 @@ venv.bak/
 
 #local media and static files
 website/media
-website/static
