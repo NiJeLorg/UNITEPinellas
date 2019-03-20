@@ -108,3 +108,6 @@ venv.bak/
 
 #local media and static files
 website/media
+
+#tachyons source
+website/website/static/css/tachyons/src/tachyons.css
