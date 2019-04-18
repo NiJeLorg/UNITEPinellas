@@ -142,9 +142,9 @@
                 </h3>
             </div>
             <div class="fl pt1 pt4-ns w-100">
-                <div class="cf mw9 flex justify-center content-center">
+                <div class="cf mw9 flex justify-center content-center flex-wrap">
                 {% for inviter in page.inviters %}
-                    <div class="w-20-ns w-50 pa2 tc">
+                    <div class="w-20-ns w-50 pa4 tc">
                         {% image inviter.logo original as logo %}
                             <a href="{{ inviter.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" /></a>
                     </div>
@@ -157,9 +157,9 @@
                 </h3>
             </div>
             <div class="fl pt1 pt4-ns w-100">
-                <div class="cf mw9 flex justify-center content-center">
+                <div class="cf mw9 flex justify-center content-center flex-wrap">
                 {% for funder in page.funders %}
-                    <div class="w-20-ns w-50 pa2 tc">
+                    <div class="w-20-ns w-50 pa4 tc">
                         {% image funder.logo original as logo %}
                             <a href="{{ funder.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" /></a>
                     </div>
@@ -172,9 +172,9 @@
                 </h3>
             </div>
             <div class="fl pt1 pt4-ns w-100">
-                <div class="cf mw9 flex justify-center content-center">
+                <div class="cf mw9 flex justify-center content-center flex-wrap">
                 {% for member in page.members %}
-                    <div class="w-20-ns w-50 pa2 tc">
+                    <div class="w-20-ns w-50 pa4 tc">
                         {% image member.logo original as logo %}
                             <a href="{{ member.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" /></a>
                     </div>
