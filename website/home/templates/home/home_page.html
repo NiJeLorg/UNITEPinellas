@@ -76,11 +76,10 @@
             <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
                 {% for report in page.reports %}
                 <h3 class="f3 fw6">{{ report.title }}</h3>
-                <h1 class="f-subheadline gold">
-                    {{ report.indicator_number }}
-                    <br />
-                    <span class="f3">{{ report.indicator_caption }}</span>
+                <h1 class="f-subheadline mb0 gold">
+                    {{ report.indicator_number }}  
                 </h1>
+                <div class="f3 fw6 gold mb5">{{ report.indicator_caption }}</div>
                 <div class="f5 two-columns">
                     {{ report.body|richtext }}
                 </div>
