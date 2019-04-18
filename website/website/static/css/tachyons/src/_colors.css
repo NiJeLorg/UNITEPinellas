@@ -14,12 +14,12 @@
   --black: #000;
   --near-black: #111;
   --dark-gray:#333;
-  --mid-gray:#555;
+  --mid-gray:#5E5C5E;
   --gray: #777;
   --silver: #999;
   --light-silver: #aaa;
   --moon-gray: #ccc;
-  --light-gray: #eee;
+  --light-gray: #ECECEC;
   --near-white: #f4f4f4;
   --white: #fff;
 
@@ -52,11 +52,11 @@
  --white-0125: rgba(255,255,255,.0125);
 
   --dark-red:  #e7040f;
-  --red:  #ff4136;
+  --red:  #FA4534;
   --light-red:  #ff725c;
   --orange:  #ff6300;
-  --gold:  #ffb700;
-  --yellow:  #ffd700;
+  --gold:  #FDE28E;
+  --yellow:  #FCD767;
   --light-yellow:  #fbf1a9;
   --purple:  #5e2ca5;
   --light-purple:  #a463f2;
@@ -70,7 +70,7 @@
   --navy:  #001b44;
   --dark-blue:  #00449e;
   --blue:  #357edd;
-  --light-blue:  #96ccff;
+  --light-blue:  #289FD4;
   --lightest-blue:  #cdecff;
   --washed-blue:  #f6fffe;
   --washed-green:  #e8fdf5;

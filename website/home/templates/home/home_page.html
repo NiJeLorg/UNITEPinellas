@@ -1,10 +1,188 @@
 {% extends "base.html" %}
 
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
-{% block body_class %}w-100 sans-serif{% endblock %}
+{% block body_class %}w-100 avenir{% endblock %}
 
 {% block content %}
-    <h1 class="f1 lh-title">{{ page.headline }}</h1> 
-    {{ page.body|richtext }}
+    <!-- Intro -->
+    <div class="ph3 ph5-ns bg-light-blue">
+        <div class="bg-center">
+            <div class="cf mw9 center">
+                <div class="pb3 pb4-ns pt4 pt5-ns mt0 white w-90 center tc">
+                    <h1 class="f-headline fw4 lh-solid">{{ page.headline }}</h1> 
+                </div>
+            </div>
+            <div class="cf mw9 center white">
+                <div class="fl w-third-ns w-100-m tc">
+                    <h3 class="f2 fw6 relative bg-animate hide-child">
+                        {{ page.sub_headline_1 }}
+                        <br />
+                        <span class="gold">CHANGE</span>
+                            <span class="db absolute mt1 ml6 left-2 z-1 w4 w5-m w5-l bg-white ba br2 b--moon-gray pa2 shadow-5 child">
+                                <p class="f6 lh-copy near-black ma0">{{ page.tooltip_1 }}</p>
+                                <span class="absolute top-0 left-2 ml3 nt2 w1 h1 bg-white bl bt b--moon-gray rotate-45"></span>
+                            </span>
+                    </h3>
+                </div>
+                <div class="fl w-third-ns w-100-m tc">
+                    <h3 class="f2 fw6 relative bg-animate hide-child">
+                        {{ page.sub_headline_2 }}
+                        <br />
+                        <span class="gold">CHANGE</span>
+                            <span class="db absolute mt1 ml6 left-2 z-1 w4 w5-m w5-l bg-white ba br2 b--moon-gray pa2 shadow-5 child">
+                                <p class="f6 lh-copy near-black ma0">{{ page.tooltip_2 }}</p>
+                                <span class="absolute top-0 left-2 ml3 nt2 w1 h1 bg-white bl bt b--moon-gray rotate-45"></span>
+                            </span>
+                    </h3>
+                </div>
+                <div class="fl w-third-ns w-100-m tc">
+                    <h3 class="f2 fw6 relative bg-animate hide-child">
+                        {{ page.sub_headline_3 }}
+                        <br />
+                        <span class="gold">CHANGE</span>
+                            <span class="db absolute mt1 ml6 left-2 z-1 w4 w5-m w5-l bg-white ba br2 b--moon-gray pa2 shadow-5 child">
+                                <p class="f6 lh-copy near-black ma0">{{ page.tooltip_3 }}</p>
+                                <span class="absolute top-0 left-2 ml3 nt2 w1 h1 bg-white bl bt b--moon-gray rotate-45"></span>
+                            </span>
+                    </h3>
+                </div>
+            </div>
+            <div class="cf mw9 center">
+                <div class="pb2 pb2-ns pt4 pt5-ns mt0 white w-90 center tc">
+                {% for report in page.reports %}
+                    <a class="f2 fw6 grow no-underline br2 ph4 pv4 mb2 dib white bg-red" href="{{ report.full_report_document.url }}">Download Equity Profile</a>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="cf mw9 center">
+                <div class="pb4 pb5-ns pt2 pt2-ns mt0 white w-90 center tc">
+                    <span class="chevron bottom"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Reports -->
+    <div class="ph3 ph5-ns pt2 pt3-ns pb4 pb5-ns bg-light-blue">
+        <div class="cf mw9 center white">
+            <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m">
+                <h3 class="f1 fw6">
+                    REPORTS
+                </h3>
+            </div>
+            <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
+                {% for report in page.reports %}
+                <h3 class="f3 fw6">{{ report.title }}</h3>
+                <h1 class="f-subheadline gold">
+                    {{ report.indicator_number }}
+                    <br />
+                    <span class="f3">{{ report.indicator_caption }}</span>
+                </h1>
+                <div class="f5 two-columns">
+                    {{ report.body|richtext }}
+                </div>
+                <div class="pb2 pb2-ns pt4 pt5-ns mt0 white">
+                    <a class="f3 fw6 grow no-underline ba br2 ph4 pv4 mb2 dib white" href="{{ report.full_report_document.url }}">Download Equity Profile</a>
+                    <a class="f3 fw6 grow no-underline ba br2 ph4 pv4 mb2 dib white" href="{{ report.summary_document.url }}">Download Summary</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="ph3 ph5-ns pt2 pt3-ns pb4 pb5-ns bg-yellow">
+        <div class="cf mw9 center">
+            <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m">
+                <h3 class="f1 fw6 red">
+                    FREQUENTLY ASKED QUESTIONS
+                </h3>
+            </div>
+            <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m black-80 accordion">
+                <span class="target-fix" id="accordion"></span>
+                {% for faq in page.faqs %}
+                    <div>
+                        <span class="target-fix" id="accordion{{ faq.pk }}"></span>
+                        <a href="#accordion{{ faq.pk }}" id="open-accordion{{ faq.pk }}" class="link black-80">
+                            <div class="bb b--black-30 pointer">
+                                <div class="fr pr4">
+                                    <span class="chevron-small bottom"></span>
+                                </div>
+                                <h3>{{ faq.question }}</h3>
+                            </div>
+                        </a>
+
+                        <a href="#accordion" id="close-accordion{{ faq.pk }}" class="link black-80">
+                            <div class="bb b--black-30 pointer">
+                                <div class="fr pr4">
+                                    <span class="chevron-small"></span>
+                                </div>
+                                <h3>{{ faq.question }}</h3>
+                            </div>
+                        </a> 
+
+                        <div class="ph3 ph4-ns pt2 pt3-ns measure accordion-content">
+                            {{ faq.answer|richtext }}
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Partners -->
+    <div class="ph3 ph5-ns pt2 pt3-ns pb4 pb5-ns bg-light-gray">
+        <div class="cf mw9 center">
+            <div class="fl w-100 pt4 pt6-ns tc">
+                <h3 class="f3 fw6">
+                    UNITE Pinellas Equity Profile Co-Inviters
+                </h3>
+            </div>
+            <div class="fl pt1 pt4-ns w-100">
+                <div class="cf mw9 flex justify-center content-center">
+                {% for inviter in page.inviters %}
+                    <div class="w-20-ns w-50 pa2">
+                        {% image inviter.logo original as logo %}
+                            <a href="{{ inviter.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" class="w-100" /></a>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="fl w-100 pt4 pt6-ns tc">
+                <h3 class="f3 fw6">
+                    UNITE Pinellas Collective Funders
+                </h3>
+            </div>
+            <div class="fl pt1 pt4-ns w-100">
+                <div class="cf mw9 flex justify-center content-center">
+                {% for funder in page.funders %}
+                    <div class="w-20-ns w-50 pa2">
+                        {% image funder.logo original as logo %}
+                            <a href="{{ funder.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" class="w-100" /></a>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="fl w-100 pt4 pt6-ns tc">
+                <h3 class="f3 fw6">
+                    UNITE Pinellas Collective Members
+                </h3>
+            </div>
+            <div class="fl pt1 pt4-ns w-100">
+                <div class="cf mw9 flex justify-center content-center">
+                {% for member in page.members %}
+                    <div class="w-20-ns w-50 pa2">
+                        {% image member.logo original as logo %}
+                            <a href="{{ member.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" class="w-100" /></a>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

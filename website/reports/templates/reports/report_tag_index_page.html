@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}w-100 sans-serif{% endblock %}
+
+{% block content %}
+    {% if request.GET.tag|length %}
+        <h1 class="f1 lh-title">Showing pages tagged "{{ request.GET.tag }}"</h1>
+    {% endif %}
+
+    {% for post in reportpages %}
+        {% with post=post.specific %}
+            <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+            {% image post.header_image width-1000 as header_image %}
+                <img src="{{ header_image.url }}" alt="{{ header_image.alt }}" class="w-100" />
+            <p>{{ post.intro }}</p>
+            {{ post.body|richtext }}
+        {% endwith %}
+    {% empty %}
+        No pages found with that tag.
+    {% endfor %}
+
+{% endblock %}

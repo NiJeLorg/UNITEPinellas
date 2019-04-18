@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}w-100 sans-serif{% endblock %}
+
+{% block content %}
+    {% for post in faqpages %}
+        {% with post=post.specific %}
+            <h2><a href="{% pageurl post %}">{{ post.question }}</a></h2>
+            {{ post.answer|richtext }}
+        {% endwith %}
+    {% endfor %}
+
+{% endblock %}

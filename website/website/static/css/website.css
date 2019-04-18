@@ -1,1 +1,105 @@
 @import'tachyons/css/tachyons.min.css';
+
+.bg-center {
+    background: url(../img/circle-left.png) center left no-repeat, url(../img/circle-center.png) top center no-repeat, url(../img/circle-right.png) center right no-repeat;
+}
+
+.chevron::before {
+	border-style: solid;
+	border-width: 0.15em 0.15em 0 0;
+	content: '';
+	display: inline-block;
+	height: 2em;
+	left: 0.15em;
+	position: relative;
+	top: 0.15em;
+	transform: rotate(-45deg);
+	vertical-align: top;
+	width: 2em;
+}
+
+.chevron.bottom:before {
+	top: 0;
+	transform: rotate(135deg);
+}
+
+.chevron-small::before {
+	border-style: solid;
+	border-width: 0.15em 0.15em 0 0;
+	content: '';
+	display: inline-block;
+	height: 1em;
+	left: 0.15em;
+	position: relative;
+	top: 0.15em;
+	transform: rotate(-45deg);
+	vertical-align: top;
+	width: 1em;
+}
+
+.chevron-small.bottom:before {
+	top: 0;
+	transform: rotate(135deg);
+}
+
+.two-columns {
+    column-width: 20rem;
+}
+
+.rich-text p {
+    margin-top: 0;
+}
+
+
+/* accordion CSS from https://codepen.io/pollardld/pen/BaADg/ */
+
+[id*="open-accordion"], [id*="close-accordion"] {
+  height: 40px;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+}
+
+[id*="close-accordion"] {
+  display: none;
+}
+
+.target-fix {
+    display: block;
+    top: 0;
+    left: 0;
+    position: fixed;
+}
+
+.accordion-content {
+    height: 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.15s ease;
+    -webkit-transition: all 0.15s ease;
+    -moz-transition: all 0.15s ease;
+}
+
+.accordion span:target ~ .accordion-content {
+    display: block;
+    height: auto;
+    padding-bottom: 2rem;
+    padding-top: 1rem;
+}
+
+.accordion span:target ~ [id*="close-accordion"] {
+    display: block;
+}
+  
+.accordion span:target ~ [id*="open-accordion"] {
+    display: none;
+}
+
+.footer-contact .rich-text p {
+    margin-bottom: 0.125rem;
+    color: #FDE28E;
+}
+
+.footer-contact .rich-text a {
+    color: #ECECEC;
+}
