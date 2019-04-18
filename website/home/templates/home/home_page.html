@@ -146,7 +146,7 @@
                 {% for inviter in page.inviters %}
                     <div class="w-20-ns w-50 pa2">
                         {% image inviter.logo original as logo %}
-                            <a href="{{ inviter.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" class="w-100" /></a>
+                            <a href="{{ inviter.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" /></a>
                     </div>
                 {% endfor %}
                 </div>
@@ -161,7 +161,7 @@
                 {% for funder in page.funders %}
                     <div class="w-20-ns w-50 pa2">
                         {% image funder.logo original as logo %}
-                            <a href="{{ funder.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" class="w-100" /></a>
+                            <a href="{{ funder.website }}"><img src="{{ logo.url }}" alt="{{ logo.alt }}" /></a>
                     </div>
                 {% endfor %}
                 </div>
