@@ -36,7 +36,7 @@ class HomePage(Page):
         return reports
 
     def faqs(self):
-        faqs = FaqPage.objects.live().order_by('date')
+        faqs = FaqPage.objects.live().order_by('pk')
         return faqs
 
     def inviters(self):
