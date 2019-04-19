@@ -51,7 +51,7 @@
             <div class="cf mw9 center">
                 <div class="pb2 pb2-ns pt4 pt5-ns mt0 white w-90 center tc">
                 {% for report in page.reports %}
-                    <a class="f2 fw6 grow no-underline br2 ph4 pv4 mb2 dib white bg-red" href="{{ report.full_report_document.url }}">Download Equity Profile</a>
+                    <a class="f2 fw6 grow no-underline br2 ph4 pv4 mb2 dib white bg-red" href="{{ report.report_document.url }}">Download Equity Profile</a>
                 {% endfor %}
                 </div>
             </div>
@@ -84,8 +84,7 @@
                     {{ report.body|richtext }}
                 </div>
                 <div class="pb2 pb2-ns pt4 pt5-ns mt0 white">
-                    <a class="f3 fw6 grow no-underline ba br2 ph4 pv4 mb2 dib white" href="{{ report.full_report_document.url }}">Download Equity Profile</a>
-                    <a class="f3 fw6 grow no-underline ba br2 ph4 pv4 mb2 dib white" href="{{ report.summary_document.url }}">Download Summary</a>
+                    <a class="f3 fw6 grow no-underline ba br2 ph4 pv4 mb2 dib white" href="{{ report.report_document.url }}">Download Equity Profile</a>
                 </div>
                 {% endfor %}
             </div>

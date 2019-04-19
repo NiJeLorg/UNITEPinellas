@@ -32,14 +32,7 @@ class ReportPageTag(TaggedItemBase):
 
 class ReportPage(Page):
     date = models.DateField("Post date")
-    summary_document = models.ForeignKey(
-        'wagtaildocs.Document',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
-    )
-    full_report_document = models.ForeignKey(
+    report_document = models.ForeignKey(
         'wagtaildocs.Document',
         null=True,
         blank=True,
@@ -61,8 +54,7 @@ class ReportPage(Page):
             FieldPanel('date'),
             FieldPanel('tags'),
         ], heading="Report Metadata"),
-        DocumentChooserPanel('summary_document'),
-        DocumentChooserPanel('full_report_document'),
+        DocumentChooserPanel('report_document'),
         FieldPanel('indicator_number'),
         FieldPanel('indicator_caption'),
         FieldPanel('body'),
