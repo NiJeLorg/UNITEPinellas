@@ -9,8 +9,8 @@
     <div class="ph3 ph5-ns bg-light-blue">
         <div class="bg-center">
             <div class="cf mw9 center">
-                <div class="pb3 pb4-ns pt4 pt5-ns mt0 white w-90 center tc">
-                    <h1 class="f-headline-ns f1 fw4 lh-solid-ns lh-title">{{ page.headline }}</h1> 
+                <div class="pb3 pb4-ns pt1 pt2-ns mt0 white w-90 center tc">
+                    <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.headline }}</h1> 
                 </div>
             </div>
             <div class="cf mw9 center white">
@@ -51,7 +51,7 @@
             <div class="cf mw9 center">
                 <div class="pb2 pb2-ns pt4 pt5-ns mt0 white w-90 center tc">
                 {% for report in page.reports %}
-                    <a class="f2 fw6 grow no-underline br2 ph4 pv4 mb2 dib white bg-red" href="{{ report.report_document.url }}">Download Equity Profile</a>
+                    <a class="f3 fw6 grow no-underline br2 ph4 pv4 mb2 dib white bg-red" href="{{ report.report_document.url }}">Download Equity Profile and Summary</a>
                 {% endfor %}
                 </div>
             </div>
@@ -84,7 +84,7 @@
                     {{ report.body|richtext }}
                 </div>
                 <div class="pb2 pb2-ns pt4 pt5-ns mt0 white">
-                    <a class="f3 fw6 grow no-underline ba br2 ph4 pv4 mb2 dib white" href="{{ report.report_document.url }}">Download Equity Profile</a>
+                    <a class="f3 fw6 grow no-underline ba br2 ph4 pv4 mb2 dib white" href="{{ report.report_document.url }}">Download Equity Profile and Summary</a>
                 </div>
                 {% endfor %}
             </div>
@@ -135,7 +135,7 @@
     <!-- Partners -->
     <div class="ph3 ph5-ns pt2 pt3-ns pb4 pb5-ns bg-light-gray">
         <div class="cf mw9 center">
-            <div class="fl w-100 pt4 pt6-ns tc">
+            {% comment %} <div class="fl w-100 pt4 pt6-ns tc">
                 <h3 class="f3 fw6">
                     UNITE Pinellas Equity Profile Co-Inviters
                 </h3>
@@ -149,7 +149,7 @@
                     </div>
                 {% endfor %}
                 </div>
-            </div>
+            </div> {% endcomment %}
             <div class="fl w-100 pt4 pt6-ns tc">
                 <h3 class="f3 fw6">
                     UNITE Pinellas Collective Funders
