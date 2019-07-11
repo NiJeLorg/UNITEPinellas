@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}w-100 sans-serif{% endblock %}
+
+{% block content %}
+    <h1 class="f1 lh-title">{{ page.question }}</h1>
+    {{ page.answer|richtext }}
+
+{% endblock %}

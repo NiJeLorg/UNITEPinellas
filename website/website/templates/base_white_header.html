@@ -1,0 +1,57 @@
+{% load static wagtailuserbar footer_tags%}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            {% block title %}
+                {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+            {% endblock %}
+            {% block title_suffix %}
+                {% with self.get_site.site_name as site_name %}
+                    {% if site_name %}| {{ site_name }}{% endif %}
+                {% endwith %}
+            {% endblock %}
+        </title>
+        <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {# Global stylesheets #}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/website.css' %}">
+
+        {% block extra_css %}
+            {# Override this in templates to add extra stylesheets #}
+        {% endblock %}
+    </head>
+
+    <body class="{% block body_class %}{% endblock %}">
+        <header class="w-100 pa3 ph5-ns bg-white-header">
+            <div class="db dt-ns mw9 center w-100">
+                <div class="db dtc-ns v-mid tl w-100">
+                    <a href="/" class="dib ma0 link w-50 w-20-l">
+                        <img src="{% static 'img/Unite-Pinellas-Logo.png' %}" />
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        {% wagtailuserbar %}
+
+        <main class="w-100">
+            {% block content %}{% endblock %}
+            <!-- Footer -->
+            {% footer %}
+        </main>
+
+
+
+        {# Global javascript #}
+        <script type="text/javascript" src="{% static 'js/website.js' %}"></script>
+
+        {% block extra_js %}
+            {# Override this in templates to add extra javascript #}
+        {% endblock %}
+    </body>
+</html>

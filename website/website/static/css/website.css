@@ -4,6 +4,10 @@
     background: url(../img/circle-left.png) center left no-repeat, url(../img/circle-center.png) top center no-repeat, url(../img/circle-right.png) center right no-repeat;
 }
 
+.bg-white-header {
+    background: url(../img/interior-header.png) top center no-repeat;
+}
+
 .chevron::before {
 	border-style: solid;
 	border-width: 0.15em 0.15em 0 0;

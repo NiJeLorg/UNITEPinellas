@@ -1,0 +1,54 @@
+{% extends "base_white_header.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailembeds_tags %}
+
+{% block body_class %}w-100 avenir{% endblock %}
+
+{% block content %}
+    <!-- Intro -->
+    <div class="ph3 ph5-ns bg-white">
+        <div class="cf mw8 center">
+            <div class="pb3 pb4-ns pt1 pt2-ns mt0 red w-90 center tc">
+                <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.headline }}</h1> 
+            </div>
+        </div>
+        <div class="cf mw9 center">
+            <div class="pb2 pb2-ns pt4 pt5-ns mt0 w-90 center tc">
+                {% embed page.video_header %}
+                <iframe src="https://player.vimeo.com/video/341352306" width="640" height="360" frameborder="0" allow="fullscreen" allowfullscreen></iframe>
+            </div>
+        </div>
+        <div class="cf mw9 center">
+            <div class="pb2 pb2-ns pt4 pt5-ns mt0 w-90 center tc measure">
+                <h2 class="f1 fw6 ttu red">{{ page.sub_headline }}</h2>
+                {{ page.intro|richtext }}
+            </div>
+        </div>
+    </div>
+
+{% for event in page.events %}
+    <div class="ph3 ph5-ns pt2 pt3-ns pb4 pb5-ns bg-white">
+    <hr />
+        <div class="cf mw9 center">
+            <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m red">
+                <h3 class="f1 fw6">
+                    {{ event.name }}
+                </h3>
+            </div>
+            <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
+                <iframe src="https://player.vimeo.com/video/343090586" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            </div>
+            <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
+                <div class="f5 measure">
+                    {{ event.description|richtext }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+
+
+
+{% endblock %}
