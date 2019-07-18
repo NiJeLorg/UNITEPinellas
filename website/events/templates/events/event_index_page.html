@@ -36,6 +36,10 @@
                 </h3>
             </div>
             <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
+                <div class="pb2 pb2-ns mt0">
+                    {% embed event.video_header max_width=640 %}
+                    {% image event.image_header width-640 %}
+                </div>             
                 <div class="mt3 f5 measure">
                     {{ event.description|richtext }}
                 </div>
