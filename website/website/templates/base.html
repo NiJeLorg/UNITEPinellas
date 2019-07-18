@@ -27,23 +27,35 @@
     </head>
 
     <body class="{% block body_class %}{% endblock %}">
-        <header class="w-100 pa3 ph5-ns bg-light-blue">
-            <div class="db dt-ns mw9 center w-100">
-                <div class="db dtc-ns v-mid tl w-100">
-                    <a href="/" class="dib ma0 link w-50 w-20-l">
-                        <img src="{% static 'img/Unite-Pinellas-Logo.png' %}" />
-                    </a>
+
+        <div id="mySidenav" class="sidenav closed">
+            <a href="javascript:void(0)" id="closebtn" class="closebtn">&times;</a>
+            <a href="/">Home</a>
+            <a href="/events">Events</a>
+        </div>
+
+        <div id="main" class="main-container closed">
+
+            <header class="w-100 pa3 ph5-ns bg-light-blue">
+                <div class="db dt-ns mw9 center w-100">
+                    <div class="db dtc-ns v-mid tl w-100">
+                        <span id="hamburger" class="hamburger white"></span>
+                        <a href="/" class="dib ma0 link w-50 w-20-l">
+                            <img src="{% static 'img/Unite-Pinellas-Logo.png' %}" />
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
-        {% wagtailuserbar %}
+            {% wagtailuserbar %}
 
-        <main class="w-100">
-            {% block content %}{% endblock %}
-            <!-- Footer -->
-            {% footer %}
-        </main>
+            <main class="w-100">
+                {% block content %}{% endblock %}
+                <!-- Footer -->
+                {% footer %}
+            </main>
+
+        </div>
 
 
 
