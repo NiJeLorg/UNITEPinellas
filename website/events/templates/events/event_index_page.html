@@ -10,16 +10,16 @@
     <div class="ph3 ph5-ns bg-white">
         <div class="cf mw8 center">
             <div class="pb3 pb4-ns pt1 pt2-ns mt0 red w-90 center tc">
-                <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.headline }}</h1> 
+                <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.headline }}</h1>
             </div>
         </div>
         <div class="cf mw9 center">
             <div class="pb2 pb2-ns mt0 w-90 center tc">
-                {% embed page.video_header max_width=640 %}
+                {% embed page.video_header max_width=720 %}
             </div>
         </div>
         <div class="cf mw9 center">
-            <div class="pb2 pb2-ns pt4 pt5-ns mt0 w-90 center tc measure">
+            <div class="pb2 pb4-ns pt3 mt0 w-60-ns center tc">
                 <h2 class="f1 fw6 ttu red">{{ page.sub_headline }}</h2>
                 {{ page.intro|richtext }}
             </div>
@@ -27,20 +27,23 @@
     </div>
 
 {% for event in page.events %}
-    <div class="ph3 ph5-ns pt2 pt3-ns pb4 pb5-ns bg-white">
+    <div class="ph3 ph5-ns pt2 pt3-ns pb4 bg-white">
     <hr />
         <div class="cf mw9 center">
-            <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m red">
-                <h3 class="f1 fw6">
+            <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m">
+                <h3 class="f2 fw6 red mb2">
                     {{ event.name }}
                 </h3>
+                <h4 class="f3 fw6 gray mt2">
+                    {{ event.date }}
+                </h4>
             </div>
             <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
                 <div class="pb2 pb2-ns mt0">
                     {% embed event.video_header max_width=640 %}
                     {% image event.image_header width-640 %}
-                </div>             
-                <div class="mt3 f5 measure">
+                </div>
+                <div class="mt3 f5 w-70-ns lh-copy">
                     {{ event.description|richtext }}
                 </div>
             </div>
