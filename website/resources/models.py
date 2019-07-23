@@ -9,8 +9,6 @@ from wagtail.search import index
 # Create your models here.
 class ResourceIndexPage(Page):
     headline = models.CharField(max_length=1000)
-    video_header = models.URLField(blank=False)
-    sub_headline = models.CharField(max_length=1000)
     intro = RichTextField(blank=False)
 
     def resources(self):
@@ -19,21 +17,18 @@ class ResourceIndexPage(Page):
 
     search_fields = Page.search_fields + [
         index.SearchField('headline'),
-        index.SearchField('sub_headline'),
         index.SearchField('intro'),
     ]
 
     content_panels = Page.content_panels + [
         FieldPanel('headline'),
-        FieldPanel('video_header'),
-        FieldPanel('sub_headline'),
         FieldPanel('intro'),
     ]
 
 class ResourcePage(Page):
     date = models.DateField("Resource date")
     name = models.CharField(max_length=250)
-    video_header = models.URLField(blank=True)
+    source = models.CharField(max_length=250)
     image_header = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -41,17 +36,22 @@ class ResourcePage(Page):
         on_delete=models.SET_NULL,
         related_name='+'
     )
+    sub_headline = models.CharField(max_length=1000, blank=True)
     description = RichTextField(blank=False)
+    external_link = models.URLField(blank=True)
 
     search_fields = Page.search_fields + [
         index.SearchField('name'),
+        index.SearchField('source'),
         index.SearchField('description'),
     ]
 
     content_panels = Page.content_panels + [
         FieldPanel('date'),
         FieldPanel('name'),
-        FieldPanel('video_header'),
+        FieldPanel('source'),
         ImageChooserPanel('image_header'),
+        FieldPanel('sub_headline'),
         FieldPanel('description'),
+        FieldPanel('external_link'),
     ]

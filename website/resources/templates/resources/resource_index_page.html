@@ -36,13 +36,20 @@
                 <h3 class="f2 fw6 red mb2">
                     {{ resource.name }}
                 </h3>
+                <h4 class="f3 fw6 gray mt2">
+                    From: {{ resource.source }}
+                </h4>
             </div>
             <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
                 <div class="pb2 pb2-ns mt0">
                     {% image resource.image_header width-640 %}
                 </div>
                 <div class="mt3 f5 w-70-ns lh-copy">
+                    <h4 class="f3 fw6 gray mt2">
+                        {{ resource.sub_headline }}
+                    </h4>
                     {{ resource.description|richtext }}
+                    <a href="{{ resource.external_link}}">Go to resource</a>
                 </div>
             </div>
         </div>
