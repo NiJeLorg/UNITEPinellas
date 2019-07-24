@@ -9,20 +9,12 @@
     <!-- Intro -->
     <div class="ph3 ph5-ns bg-white">
         <div class="cf mw8 center">
-            <div class="pb3 pb4-ns pt1 pt2-ns mt0 red w-90 center tc">
+            <div class="pb3 pb4-ns pt1 pt2-ns mt0 yellow w-90 center tc">
                 <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.headline }}</h1>
             </div>
         </div>
-        <!-- Delete this section
         <div class="cf mw9 center">
-            <div class="pb2 pb2-ns mt0 w-90 center tc">
-                {% embed page.video_header max_width=720 %}
-            </div>
-        </div>
-        -->
-        <div class="cf mw9 center">
-            <div class="pb2 pb4-ns pt3 mt0 w-60-ns center tc">
-                <h2 class="f1 fw6 ttu red">{{ page.sub_headline }}</h2>
+            <div class="pb2 pb4-ns pt3 mt0 w-60-ns center tc f4">
                 {{ page.intro|richtext }}
             </div>
         </div>
@@ -33,23 +25,23 @@
     <hr />
         <div class="cf mw9 center">
             <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m">
-                <h3 class="f2 fw6 red mb2">
+                <h3 class="f2 fw6 yellow mb2">
                     {{ resource.name }}
                 </h3>
-                <h4 class="f3 fw6 gray mt2">
-                    From: {{ resource.source }}
+                <h4 class="f4 fw6 gray mt2">
+                    {{ resource.source }}
                 </h4>
             </div>
-            <div class="fl pt1 pt4-ns w-two-thirds-l w-100-m">
-                <div class="pb2 pb2-ns mt0">
+            <div class="fl pt1 w-two-thirds-l w-100-m">
+                <!--<div class="pb2 pb2-ns mt0">
                     {% image resource.image_header width-640 %}
-                </div>
+                </div>-->
                 <div class="mt3 f5 w-70-ns lh-copy">
-                    <h4 class="f3 fw6 gray mt2">
+                    <h4 class="f3 fw6 gray mt4">
                         {{ resource.sub_headline }}
                     </h4>
                     {{ resource.description|richtext }}
-                    <a href="{{ resource.external_link}}">Go to resource</a>
+                    <a class="f4 fw6 grow no-underline ba br2 ph4 pv2 mb2 dib yellow" href="{{ resource.external_link}}">Go to resource</a>
                 </div>
             </div>
         </div>
