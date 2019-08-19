@@ -111,3 +111,6 @@ website/media
 
 #tachyons source
 website/website/static/css/tachyons/src/tachyons.css
+
+#tachyons node modules
+website/website/static/css/tachyons/node_modules/

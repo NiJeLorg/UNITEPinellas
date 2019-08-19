@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}w-100 sans-serif{% endblock %}
+
+{% block content %}
+    <h1 class="f1 lh-title">{{ page.title }} <small class="f5 lh-copy">{{ page.date }}</small></h1>
+    {% image page.header_image width-1000 as header_image %}
+        <img src="{{ header_image.url }}" alt="{{ header_image.alt }}" class="w-100" />
+    {% if page.tags.all.count %}
+        <div class="tags">
+            <p>Topics: 
+            {% for tag in page.tags.all %}
+                <a href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="intro">{{ page.intro }}</div>
+    {{ page.body|richtext }}
+
+{% endblock %}
