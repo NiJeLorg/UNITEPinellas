@@ -13,11 +13,6 @@
                 <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.headline }}</h1>
             </div>
         </div>
-        <div class="cf mw9 center">
-            <div class="pb2 pb4-ns pt3 mt0 w-60-ns center tc f4">
-                {{ page.intro|richtext }}
-            </div>
-        </div>
     </div>
 
 {% for resource in page.resources %}
@@ -33,9 +28,9 @@
                 </h4>
             </div>
             <div class="fl pt1 w-two-thirds-l w-100-m">
-                <!--<div class="pb2 pb2-ns mt0">
+                <div class="pb2 pb2-ns mt0">
                     {% image resource.image_header width-640 %}
-                </div>-->
+                </div>
                 <div class="mt3 f5 w-70-ns lh-copy">
                     <h4 class="f3 fw6 gray mt4">
                         {{ resource.sub_headline }}
