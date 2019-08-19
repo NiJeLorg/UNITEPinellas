@@ -108,6 +108,12 @@ venv.bak/
 
 #local media and static files
 website/media
+website/static
+
+#local django settings
+website/website/settings/base.py
+website/website/settings/dev.py
+website/website/settings/production.py
 
 #tachyons source
 website/website/static/css/tachyons/src/tachyons.css
