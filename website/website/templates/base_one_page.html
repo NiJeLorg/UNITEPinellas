@@ -1,7 +1,7 @@
-{% load static wagtailuserbar footer_tags%}
+{% load static wagtailuserbar%}
 
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html class="no-js h-100" lang="en">
     <head>
         <meta charset="utf-8" />
         <title>
@@ -16,7 +16,7 @@
         </title>
         <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
         <meta name="description" content="" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
         {# Global stylesheets #}
         <link rel="stylesheet" type="text/css" href="{% static 'css/website.css' %}">
@@ -36,14 +36,14 @@
             <a href="/data-explorer">Data Explorer</a>
         </div>
 
-        <div id="main" class="main-container closed">
+        <div id="main" class="main-container closed h-100">
 
-            <header class="w-100 pa3 ph5-ns bg-light-blue">
+            <header class="w-100 pa3 ph5-ns bg-white-header">
                 <div class="db dt-ns mw9 center w-100">
                     <div class="db dtc-ns v-mid tl w-100">
-                        <span id="hamburger" class="hamburger white"></span>
-                        <a href="/" class="dib ma0 link w-50 w-20-l">
-                            <img src="{% static 'img/Unite-Pinellas-Logo.png' %}" />
+                        <span id="hamburger" class="hamburger dark"></span>
+                        <a href="/" class="dib ma0 link w-50 w-20-l f3">
+                            <img src="{% static 'img/Unite-Pinellas-Logo-Dark.png' %}" />
                         </a>
                     </div>
                 </div>
@@ -51,10 +51,8 @@
 
             {% wagtailuserbar %}
 
-            <main class="w-100">
+            <main class="w-100 h-100">
                 {% block content %}{% endblock %}
-                <!-- Footer -->
-                {% footer %}
             </main>
 
         </div>

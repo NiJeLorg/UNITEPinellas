@@ -1,0 +1,38 @@
+{% extends "base_one_page.html" %}
+
+{% load static %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
+{% endblock %}
+
+{% block body_class %}w-100 h-100 avenir{% endblock %}
+
+{% block content %}
+    <!-- Map Navigation -->
+    <div class="ph3 ph4-ns bg-white fl w-30">
+        <div class="cf">
+            <div class="pb1 pb2-ns mt0">
+                <h1 class="f3 f2-ns fw6 lh-solid-ns lh-title ttu gold">{{ page.name }}</h1>
+                <p>{% lorem 1 %}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Pane -->
+    <div class="bg-white fl w-70 h-100">
+        <div class="cf h-100">
+            <div id="map" class=""></div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+    <script type="text/javascript" src="{% static 'data/acs2017_5yr_B19013_14000US12103027502.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+{% endblock %}

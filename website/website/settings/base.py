@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'partners',
     'events',
     'resources',
+    'dataplatform',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
