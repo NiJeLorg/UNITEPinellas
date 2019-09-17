@@ -9,7 +9,6 @@ from wagtail.search import index
 # Create your models here.
 class ResourceIndexPage(Page):
     headline = models.CharField(max_length=1000)
-    intro = RichTextField(blank=False)
 
     def resources(self):
         resources = ResourcePage.objects.live().order_by('-date')
@@ -17,12 +16,10 @@ class ResourceIndexPage(Page):
 
     search_fields = Page.search_fields + [
         index.SearchField('headline'),
-        index.SearchField('intro'),
     ]
 
     content_panels = Page.content_panels + [
         FieldPanel('headline'),
-        FieldPanel('intro'),
     ]
 
 class ResourcePage(Page):
