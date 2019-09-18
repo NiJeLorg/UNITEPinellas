@@ -1,4 +1,9 @@
-#map { height: 84%;}
+#map { 
+}
+
+.map-height {
+	height: 83%;
+}
 
 .info {
 	padding: 6px 8px;
@@ -24,4 +29,6 @@
 	margin-right: 8px;
 	opacity: 0.7;
 }
+
+
 

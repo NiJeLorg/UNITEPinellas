@@ -16,13 +16,8 @@ function createMap() {
         minZoom: 0
     }).addTo(map);
 
-    geojson = L.geoJSON(mhhi, 
-        {style: style, onEachFeature: onEachFeature})
-        .bindPopup(function (layer) {
-            console.log(layer);
-            return layer.feature.properties.B19013001;
-        })
-        .addTo(map);
+    geojson = L.geoJSON(mhhi, {style: style, onEachFeature: onEachFeature})
+		.addTo(map);
 
     legend.addTo(map);
 
@@ -73,7 +68,12 @@ function onEachFeature(feature, layer) {
 	layer.on({
 		mouseover: highlightFeature,
 		mouseout: resetHighlight
-    });
+	});
+	
+	layer.bindPopup(function (layer) {
+		console.log(layer);
+		return layer.feature.properties.B19013001;
+	});
 }
 
 legend.onAdd = function (map) {
