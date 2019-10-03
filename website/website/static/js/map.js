@@ -20,7 +20,6 @@ function createMap() {
 		.addTo(map);
 
     legend.addTo(map);
-
 }
 
 
@@ -69,11 +68,13 @@ function onEachFeature(feature, layer) {
 		mouseover: highlightFeature,
 		mouseout: resetHighlight
 	});
-	
+
 	layer.bindPopup(function (layer) {
 		console.log(layer);
 		return layer.feature.properties.B19013001;
 	});
+
+  layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Title</h3><p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue  href='#0>Report</a>");
 }
 
 legend.onAdd = function (map) {
