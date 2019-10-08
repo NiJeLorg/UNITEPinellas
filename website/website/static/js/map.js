@@ -7,21 +7,31 @@ function init() {
 }
 
 function createMap() {
-    const map = L.map('map').setView([27.865129, -82.678459], 11);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/{style}/{z}/{x}/{y}' + (L.Browser.retina ? '@2x.png' : '.png'), {
-        attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        style: 'light_all',
-        maxZoom: 20,
-        minZoom: 0
-    }).addTo(map);
+    const geoAPI = "https://api.censusreporter.org/1.0/geo/show/tiger2018?geo_ids=140|05000US12103";
+    console.log(geoAPI);
+    d3.json(geoAPI).then(function(json, error) {
+        if (error) return console.warn(error);
+        const geoFeatures = json.features;
 
-    geojson = L.geoJSON(mhhi, {style: style, onEachFeature: onEachFeature})
-		.addTo(map);
+	    const map = L.map('map').setView([27.865129, -82.678459], 11);
+	    L.tileLayer('https://{s}.basemaps.cartocdn.com/{style}/{z}/{x}/{y}' + (L.Browser.retina ? '@2x.png' : '.png'), {
+	        attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	        subdomains: 'abcd',
+	        style: 'light_all',
+	        maxZoom: 20,
+	        minZoom: 0
+	    }).addTo(map);
 
-    legend.addTo(map);
+	    geojson = L.geoJSON(geoFeatures, {style: style, onEachFeature: onEachFeature});
+	    geojson.addTo(map);
+
+
+    	legend.addTo(map);
+
+    })	
 
 }
+
 
 
 function getColor(d) {
