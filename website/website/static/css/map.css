@@ -1,8 +1,5 @@
-<<<<<<< HEAD
+
 #map {
-=======
-#map { 
->>>>>>> 9d5d20df35651d429290c179db8a3086b991e0b8
 }
 
 .map-height {
@@ -34,8 +31,6 @@
 	opacity: 0.7;
 }
 
-
-<<<<<<< HEAD
 .leaflet-popup-content-wrapper {
 	border-radius: 4px;
 }
@@ -59,6 +54,3 @@
 	box-shadow: none;
 	filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4));
 }
-=======
-
->>>>>>> 9d5d20df35651d429290c179db8a3086b991e0b8
