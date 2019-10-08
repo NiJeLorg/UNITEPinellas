@@ -1,4 +1,5 @@
-#map { 
+
+#map {
 }
 
 .map-height {
@@ -30,5 +31,26 @@
 	opacity: 0.7;
 }
 
+.leaflet-popup-content-wrapper {
+	border-radius: 4px;
+}
 
+.leaflet-popup-content p {
+	margin-top: 8px;
+}
 
+.leaflet-popup-tip-container {
+	height: 30px;
+}
+
+.leaflet-popup-tip {
+	width: 0;
+  height: 0;
+  border-top: 27px solid white;
+  border-right: 15px solid transparent;
+	background: none;
+	transform: none;
+	margin: 0 auto;
+	box-shadow: none;
+	filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4));
+}
