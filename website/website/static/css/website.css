@@ -160,6 +160,14 @@ img.richtext-image {
 
 .right {float: right;}
 
+select#issue-select {
+  height: 35px;
+}
+
+a#selected-btn {
+  border-color: #4ba0d1;
+}
+
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
