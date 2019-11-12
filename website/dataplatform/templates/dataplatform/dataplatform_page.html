@@ -14,36 +14,48 @@
     <!-- Map Navigation -->
     <div class="ph3 ph4-ns bg-white fl w-30">
         <div class="cf">
-            <div class="pb1 pb2-ns mt0">
+            <div id="intro-text-and-buttons" class="pb1 pb2-ns mt0">
                 <h1 class="f3 f2-ns fw6 lh-solid-ns lh-title ttu gold">{{ page.name }}</h1>
                 <p>{% lorem 1 %}</p>
                 <h2 class="f4 f3-ns fw6 gray ttu">Select a Topic</h2>
-                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue " href="#0">Justice</a>
-                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue " href="#0">Children and Youth</a>
-                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue " href="#0">Economics</a>
-                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue " href="#0">Housing</a>
-                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue " href="#0">Civic Participation</a>
+                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Justice">Justice</a>
+                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#ChildrenAndYouth">Children and Youth</a>
+                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Economics">Economics</a>
+                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Housing">Housing</a>
+                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#CivicParticipation">Civic Participation</a>
             </div>
-            <div class="pb1 pb2-ns mt0">
-              <select id="issue-select" class="f6 fw6 ph3 pv3 mb2 db ttu light-blue b--light-blue">
-                <option value="">Justice</option>
-                <option value="">Children and Youth</option>
-                <option value="">Economics</option>
-                <option value="">Housing</option>
-                <option value="">Civic Participation</option>
+            <div id="controls" class="pb1 pb2-ns mt0" style="display: none;">
+              <select id="issue-select" class="f6 fw6 ph1 pv1 mb2 db ttu light-blue b--light-blue">
+                <option value="Justice">Justice</option>
+                <option value="Children and Youth">Children and Youth</option>
+                <option value="Economics">Economics</option>
+                <option value="Housing">Housing</option>
+                <option value="Civic Participation">Civic Participation</option>
               </select>
               <a id="selected-btn" class="f6 fw6 link grow no-underline br2 br--left-ns ba ph3 pv2 mb2 dib ttu white bg-light-blue " href="#0">Rental</a>
               <a class="f6 fw6 link grow no-underline ba br2 br--right-ns ph3 pv2 mb2 nl1 dib ttu light-blue " href="#0">Evictions</a>
-              <h2 class="f4 f4-ns fw6 lh-solid-ns lh-title ttu light-blue">Municipal Evictions</h2>
+              <h2 class="f4 f4-ns fw6 lh-solid-ns lh-title ttu light-blue">Median Gross Rent as a Percentage of Household Income</h2>
               <p>{% lorem 1 %}</p>
             </div>
         </div>
     </div>
 
     <!-- Map Pane -->
-    <div class="bg-white fl w-70 h-100">
+    <div class="relative bg-white fl w-70 h-100">
         <div class="cf h-100">
             <div id="map" class="h-100"></div>
+        </div>
+        <div class="absolute bottom-0 left-1 z-999">
+            <select id="geography-select" class="f6 fw6 ph1 pv1 mb2 db ttu light-blue b--light-blue">
+                <option value="150">Census Block Groups</option>
+                <option value="140">Census Tracts</option>
+                <option value="860" selected="selected">Zip Codes</option>
+                <option value="795">Public Use Micro Areas</option>
+                <option value="160">Census Defined Place</option>
+                <option value="620">State House</option>
+                <option value="610">State Senate</option>
+                <option value="500">Congressional District</option>
+            </select>
         </div>
     </div>
 
@@ -53,6 +65,6 @@
 {% block extra_js %}
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
-    <script type="text/javascript" src="{% static 'data/acs2017_5yr_B19013_14000US12103027502.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'js/data-explorer.js' %}"></script>
 {% endblock %}
