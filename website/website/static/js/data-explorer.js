@@ -23,7 +23,7 @@ let color;
 
 // check to see which value is selected in the geography drop down
 if ($('#geography-select').val()) {
-	selected_sl = $('#geography-select').val(); 
+	selected_sl = $('#geography-select').val();
 } else {
 	selected_sl = '795'; // default summary level is Census Defined Place
 }
@@ -66,11 +66,11 @@ function updateGeojson() {
 	if (selected_tableID) {
 		mergeDataWGeoFeatures();
 	}
-	// check for existence of geojson 
+	// check for existence of geojson
 	else if (!map.hasLayer(geoJsons[selected_sl])) {
 		geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: outlineStyle, onEachFeature: outlineOnEachFeature});
 		geoJsons[selected_sl].addTo(map);
-	} 
+	}
 
 }
 
@@ -100,7 +100,7 @@ function mergeDataWGeoFeatures() {
 
 		// create geojson
 		geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: style, onEachFeature: onEachFeature});
-		geoJsons[selected_sl].addTo(map);		
+		geoJsons[selected_sl].addTo(map);
 	});
 
 }
@@ -116,7 +116,7 @@ function outlineStyle(feature) {
 }
 
 function outlineOnEachFeature(feature, layer) {
-	layer.bindTooltip("<h3 class='f5 mb1 gray ttu'>"+ feature.properties.name + "</h3>", {sticky: true});
+	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.name + "</h3>", {sticky: true});
 }
 
 
@@ -227,6 +227,3 @@ function isEmpty(obj) {
 /* maps TO DO: build map of issues, tables*/
 let metadata = {'Justice':{}, 'Children and Youth':{}, 'Economics':{}, 'Housing':{}, 'Civic Participation':{}}
 metadata['Housing'] = {'B25071': ''}
-
-  
-  

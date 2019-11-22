@@ -12,11 +12,12 @@
 
 {% block content %}
     <!-- Map Navigation -->
-    <div class="ph3 ph4-ns bg-white fl w-30">
+    <div class="ph3 ph4-ns fl w-30-l">
         <div class="cf">
             <div id="intro-text-and-buttons" class="pb1 pb2-ns mt0">
-                <h1 class="f3 f2-ns fw6 lh-solid-ns lh-title ttu gold">{{ page.name }}</h1>
+                <h1 class="f3 f2-ns fw6 lh-solid-ns lh-title ttu light-blue">{{ page.name }}</h1>
                 <p>{% lorem 1 %}</p>
+                <hr class="thin">
                 <h2 class="f4 f3-ns fw6 gray ttu">Select a Topic</h2>
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Justice">Justice</a>
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#ChildrenAndYouth">Children and Youth</a>
@@ -24,7 +25,7 @@
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Housing">Housing</a>
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#CivicParticipation">Civic Participation</a>
             </div>
-            <div id="controls" class="pb1 pb2-ns mt0" style="display: none;">
+            <div id="controls" class="pb1 pb2-ns pt4 mt0" style="display: none;">
               <select id="issue-select" class="f6 fw6 ph1 pv1 mb2 db ttu light-blue b--light-blue">
                 <option value="Justice">Justice</option>
                 <option value="Children and Youth">Children and Youth</option>
@@ -41,7 +42,7 @@
     </div>
 
     <!-- Map Pane -->
-    <div class="relative bg-white fl w-70 h-100">
+    <div class="bl-l bt b--light-silver relative bg-white fl w-100 w-70-l h-100">
         <div class="cf h-100">
             <div id="map" class="h-100"></div>
         </div>

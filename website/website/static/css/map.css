@@ -3,7 +3,14 @@
 }
 
 .map-height {
-	height: 83%;
+	height: 83.75%;
+	background-color: #f7f7f7;
+}
+
+hr.thin {
+	height: 1px;
+	border: none;
+	background-color: #ccc;
 }
 
 .info {
@@ -53,4 +60,8 @@
 	margin: 0 auto;
 	box-shadow: none;
 	filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4));
+}
+
+.leaflet-tooltip {
+	padding: 2px 8px 3px;
 }
