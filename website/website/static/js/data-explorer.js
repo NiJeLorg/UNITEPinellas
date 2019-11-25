@@ -7,6 +7,7 @@ const pcgid = '05000US12103';
 
 /* data API constants */
 const baseDataURL = 'https://api.censusreporter.org/1.0/data/show/latest?'
+const baseParentsURL = 'https://api.censusreporter.org/1.0/geo/tiger2018/';
 
 /* other constants */
 const legend = L.control({position: 'bottomright'});
@@ -17,6 +18,7 @@ let selected_sl;
 let geoFeatures = {'150':{}, '140':{}, '860':{}, '795':{}, '160':{}, '620':{}, '610':{}, '500':{}};
 let geoJsons = {'150':{}, '140':{}, '860':{}, '795':{}, '160':{}, '620':{}, '610':{}, '500':{}};
 let dataAPICall;
+let dataTableName;
 let selected_tableID;
 let selected_tableKey;
 let color;
@@ -27,7 +29,6 @@ if ($('#geography-select').val()) {
 } else {
 	selected_sl = '795'; // default summary level is Census Defined Place
 }
-
 
 function init() {
 	createMap();
@@ -48,8 +49,17 @@ function createMap() {
 function updateGeography() {
 	// if geography is empty, make API call and store in geojsons dictionary
 	if (isEmpty(geoFeatures[selected_sl])) {
-		geoAPI = baseGeoAPI + selected_sl + '|' + pcgid;
-		d3.json(geoAPI).then(function(json, error) {
+		// **** pull from census API -- depreciated ****//
+		// geoAPI = baseGeoAPI + selected_sl + '|' + pcgid;
+		// d3.json(geoAPI).then(function(json, error) {
+		// 	if (error) return console.warn(error);
+		// 	geoFeatures[selected_sl] = json.features;
+		// 	// pass to a function to make a geojson
+		// 	updateGeojson();
+		// })
+		// **** pull from local files ****//
+		geoFile = static_url + 'data/' + selected_sl + '.geojson';
+		d3.json(geoFile).then(function(json, error) {
 			if (error) return console.warn(error);
 			geoFeatures[selected_sl] = json.features;
 			// pass to a function to make a geojson
@@ -81,19 +91,23 @@ function removeGeojson() {
 }
 
 function mergeDataWGeoFeatures() {
+	// if the summary level is not city
 	// select data from a specific table and merge with geoFeatures
 	dataAPICall = baseDataURL + "table_ids=" + selected_tableID + "&geo_ids=" + selected_sl + '|' + pcgid;
 	console.log(dataAPICall);
 	d3.json(dataAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
+		// set data table name
+		dataTableName = json.tables[selected_tableID].title;
 		let values = [];
 		for (let geoid in json.data) {
 			for (let i = 0; i < geoFeatures[selected_sl].length; i++) {
-				if (geoid == geoFeatures[selected_sl][i].properties.geoid) {
+				if (geoid == geoFeatures[selected_sl][i].properties.created_geoid) {
 					geoFeatures[selected_sl][i].properties[selected_tableID] = json.data[geoid][selected_tableID];
 					values.push(geoFeatures[selected_sl][i].properties[selected_tableID].estimate[selected_tableKey])
 				}
 			}
+
 		}
 		// create color scale
 		color = d3.scaleSequentialQuantile(values, d3.interpolateBlues)
@@ -116,7 +130,7 @@ function outlineStyle(feature) {
 }
 
 function outlineOnEachFeature(feature, layer) {
-	layer.bindTooltip("<h3 class='f5 mb1 gray ttu'>"+ feature.properties.name + "</h3>", {sticky: true});
+	layer.bindTooltip("<h3 class='f5 mb1 gray ttu'>"+ feature.properties.display_name + "</h3>", {sticky: true});
 }
 
 
@@ -131,7 +145,7 @@ function style(feature) {
 }
 
 function highlightFeature(e) {
-	var layer = e.target;
+	let layer = e.target;
 
 	layer.setStyle({
 		weight: 2,
@@ -149,22 +163,71 @@ function resetHighlight(e) {
 	geoJsons[selected_sl].resetStyle(e.target);
 }
 
+function onLayerClick(e) {
+	let popup = e.target.getPopup();
+	let parentGeoIDs = []
+	let parentData = []
+
+	// call parents API 
+	parentsAPICall = baseParentsURL + e.target.feature.properties.created_geoid + '/parents'
+	console.log(parentsAPICall)
+
+	d3.json(parentsAPICall).then(function(json, error) {
+		if (error) return console.warn(error);
+		// take only one parent if geography if [1] is county level
+		for (let i = 0; i < json.parents.length; i++) {
+			// remove national parent level
+			if (json.parents[i].sumlevel != '010') {
+				parentGeoIDs.push(json.parents[i].geoid)
+			}
+		}
+		// array to comma sep string
+		const pgeoid_string = parentGeoIDs.join(",")
+
+		console.log(pgeoid_string);
+
+		// set up data API call for parents
+		parentsDataAPICall = baseDataURL + "table_ids=" + selected_tableID + "&geo_ids=" + pgeoid_string;
+		console.log(parentsDataAPICall);
+		d3.json(parentsDataAPICall).then(function(parents_json, parents_error) {
+			if (parents_error) return console.warn(parents_error);
+			console.log(parents_json);
+			// update the popup
+			console.log(e.target.feature);
+			let popupContent = "<h3 class='f5 mb1 gray ttu'>"+e.target.feature.properties.display_name+"</h3>";
+			popupContent += "<p class='gray b'>"+dataTableName+"</p>";
+
+			// this feature
+			
+
+			// loop through parents and print values 
+			
+			popupContent += "<p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>";
+			popupContent += "<a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue href='#0'>Report</a>";
+			popup.setContent( popupContent );
+        	popup.update();
+
+
+		});	
+		
+
+	});
+
+}
 
 
 function onEachFeature(feature, layer) {
 	layer.on({
 		mouseover: highlightFeature,
-		mouseout: resetHighlight
+		mouseout: resetHighlight,
+		click: onLayerClick
 	});
 
-	layer.bindTooltip("<h3 class='f5 mb1 gray ttu'>"+ feature.properties.name + "</h3><p class='gray'>"+ layer.feature.properties[selected_tableID].estimate[selected_tableKey] +"</p>", {sticky: true});
+	layer.bindTooltip("<h3 class='f5 mb1 gray ttu'>"+ feature.properties.display_name + "</h3><p class='gray'>"+ layer.feature.properties[selected_tableID].estimate[selected_tableKey] +"</p>", {sticky: true});
 
-	// layer.bindPopup(function (layer) {
-	// 	console.log(layer);
-	// 	return layer.feature.properties[selected_tableID].estimate[selected_tableKey];
-	// });
+	//layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Title</h3><p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue  href='#0'>Report</a>");
 
-	layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Title</h3><p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue  href='#0'>Report</a>");
+	layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Loading Animation Here</h3>");
 }
 
 legend.onAdd = function (map) {
