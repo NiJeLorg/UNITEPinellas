@@ -29,7 +29,7 @@ if ($('#geography-select').val()) {
 }
 
 
-function init() {
+function initMap() {
 	createMap();
 	updateGeography();
 }
@@ -157,7 +157,7 @@ function onEachFeature(feature, layer) {
 		mouseout: resetHighlight
 	});
 
-	layer.bindTooltip("<h3 class='f5 mb1 gray ttu'>"+ feature.properties.name + "</h3><p class='gray'>"+ layer.feature.properties[selected_tableID].estimate[selected_tableKey] +"</p>", {sticky: true});
+	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.name + "</h3><p class='gray ma0'>"+ layer.feature.properties[selected_tableID].estimate[selected_tableKey] +"</p>", {sticky: true, className: 'housing-tooltip', permanent: false});
 
 	// layer.bindPopup(function (layer) {
 	// 	console.log(layer);
@@ -216,7 +216,7 @@ $("#issue-select").on('change', function (e) {
 
 
 // initialize
-window.onload = init;
+window.onload = initMap;
 
 // utility functions
 function isEmpty(obj) {

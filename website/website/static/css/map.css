@@ -2,9 +2,12 @@
 #map {
 }
 
+.bg-lighter-gray {
+	background-color: #f7f7f7;
+}
+
 .map-height {
 	height: 83.75%;
-	background-color: #f7f7f7;
 }
 
 hr.thin {
@@ -64,4 +67,8 @@ hr.thin {
 
 .leaflet-tooltip {
 	padding: 2px 8px 3px;
+}
+
+.housing-tooltip {
+	padding: 3px 10px 5px;
 }
