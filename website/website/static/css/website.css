@@ -5,7 +5,7 @@
 }
 
 .bg-white-header {
-    background: url(../img/interior-header.png) top center no-repeat;
+    background: url(../img/interior-header.png) top center no-repeat white;
 }
 
 .hamburger {
@@ -15,7 +15,6 @@
     width: 3em;
     height: 1.5em;
     margin-right: 2em;
-    margin-bottom: 1.75em;
 }
 
 .hamburger:before {
