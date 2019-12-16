@@ -46,7 +46,7 @@ hr.thin {
 }
 
 .leaflet-popup-content p {
-	margin-top: 8px;
+	margin: 8px 0;
 }
 
 .leaflet-popup-tip-container {

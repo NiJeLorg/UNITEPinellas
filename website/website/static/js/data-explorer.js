@@ -21,6 +21,7 @@ let dataAPICall;
 let dataTableName;
 let selected_tableID;
 let selected_tableKey;
+let selected_data_type;
 let color;
 
 // check to see which value is selected in the geography drop down
@@ -42,22 +43,14 @@ function createMap() {
 		attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		subdomains: 'abcd',
 		style: 'light_all',
-		maxZoom: 20,
-		minZoom: 0
+		maxZoom: 15,
+		minZoom: 10
 	}).addTo(map);
 }
 
 function updateGeography() {
 	// if geography is empty, make API call and store in geojsons dictionary
 	if (isEmpty(geoFeatures[selected_sl])) {
-		// **** pull from census API -- depreciated ****//
-		// geoAPI = baseGeoAPI + selected_sl + '|' + pcgid;
-		// d3.json(geoAPI).then(function(json, error) {
-		// 	if (error) return console.warn(error);
-		// 	geoFeatures[selected_sl] = json.features;
-		// 	// pass to a function to make a geojson
-		// 	updateGeojson();
-		// })
 		// **** pull from local files ****//
 		geoFile = static_url + 'data/' + selected_sl + '.geojson';
 		d3.json(geoFile).then(function(json, error) {
@@ -131,7 +124,7 @@ function outlineStyle(feature) {
 }
 
 function outlineOnEachFeature(feature, layer) {
-	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.name + "</h3>", {sticky: true});
+	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.display_name + "</h3>", {sticky: true});
 }
 
 
@@ -177,10 +170,11 @@ function onLayerClick(e) {
 		if (error) return console.warn(error);
 		// take only one parent if geography if [1] is county level
 		for (let i = 0; i < json.parents.length; i++) {
-			// remove national parent level
-			if (json.parents[i].sumlevel != '010') {
-				parentGeoIDs.push(json.parents[i].geoid)
-			}
+			parentGeoIDs.push(json.parents[i].geoid)
+			// // remove national parent level
+			// if (json.parents[i].sumlevel != '010') {
+			// 	parentGeoIDs.push(json.parents[i].geoid)
+			// }
 		}
 		// array to comma sep string
 		const pgeoid_string = parentGeoIDs.join(",")
@@ -193,17 +187,36 @@ function onLayerClick(e) {
 		d3.json(parentsDataAPICall).then(function(parents_json, parents_error) {
 			if (parents_error) return console.warn(parents_error);
 			console.log(parents_json);
+
 			// update the popup
-			console.log(e.target.feature);
-			let popupContent = "<h3 class='f5 mb1 gray ttu'>"+e.target.feature.properties.display_name+"</h3>";
-			popupContent += "<p class='gray b'>"+dataTableName+"</p>";
+			let popupContent = "<h3 class='f5 mb1 gray ttu'>"+dataTableName+"</h3>";
+			let display_value;
 
-			// this feature
-			
+			// loop through parents and pull estimates
+			for (let i = 0; i < json.parents.length; i++) {
 
-			// loop through parents and print values 
+				console.log(json.parents[i])
+				// look up the estimate via geoid and table name
+				console.log(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey])
+
+				if (parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]){
+					if (selected_data_type == 'pct') {
+						display_value = percentify(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]);
+					} else if (selected_data_type == 'dollar') {
+						display_value = dollarify(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]);
+					} else {
+						display_value = numberWithCommas(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]);
+					}
+				} else {
+					display_value = "N/A";
+				}
+
+
+				popupContent += "<p class='gray'><span class='b'>"+json.parents[i].display_name+"</span>: "+display_value+"</p>";
+			}		
 			
-			popupContent += "<p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>";
+			
+			// popupContent += "<p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>";
 			popupContent += "<a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue href='#0'>Report</a>";
 			popup.setContent( popupContent );
         	popup.update();
@@ -216,7 +229,6 @@ function onLayerClick(e) {
 
 }
 
-
 function onEachFeature(feature, layer) {
 	layer.on({
 		mouseover: highlightFeature,
@@ -224,12 +236,38 @@ function onEachFeature(feature, layer) {
 		click: onLayerClick
 	});
 
-	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.name + "</h3><p class='gray ma0'>"+ layer.feature.properties[selected_tableID].estimate[selected_tableKey] +"</p>", {sticky: true, className: 'housing-tooltip', permanent: false});
+	if (layer.feature.properties[selected_tableID].estimate[selected_tableKey]){
+		if (selected_data_type == 'pct') {
+			display_value = percentify(layer.feature.properties[selected_tableID].estimate[selected_tableKey]);
+		} else if (selected_data_type == 'dollar') {
+			display_value = dollarify(layer.feature.properties[selected_tableID].estimate[selected_tableKey]);
+		} else {
+			display_value = numberWithCommas(layer.feature.properties[selected_tableID].estimate[selected_tableKey]);
+		}	
+	} else {
+		display_value = "N/A";
+	}
+
+
+	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.display_name + "</h3><p class='gray ma0'>"+ display_value +"</p>", {sticky: true, className: 'housing-tooltip', permanent: false});
 
 	//layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Title</h3><p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue  href='#0'>Report</a>");
 
 	layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Loading Animation Here</h3>");
 }
+
+function percentify(value) {
+	return value.toFixed(1) + "%";
+}
+
+function dollarify(value) {
+	return "$" + numberWithCommas(value.toFixed(0));
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 
 legend.onAdd = function (map) {
 
@@ -268,6 +306,7 @@ $("#issue-select").on('change', function (e) {
 	if (this.value == "Housing") {
 		selected_tableID = 'B25071';
 		selected_tableKey = 'B25071001';
+		selected_data_type = 'pct';
 	}
 
 	// join data to geographies
@@ -290,4 +329,4 @@ function isEmpty(obj) {
 
 /* maps TO DO: build map of issues, tables*/
 let metadata = {'Justice':{}, 'Children and Youth':{}, 'Economics':{}, 'Housing':{}, 'Civic Participation':{}}
-metadata['Housing'] = {'B25071': ''}
+metadata['Housing'] = {'B25071': 'B25071001'}
