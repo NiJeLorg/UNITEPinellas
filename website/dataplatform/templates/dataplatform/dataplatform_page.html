@@ -16,7 +16,7 @@
         <div class="cf">
             <div id="intro-text-and-buttons" class="pb1 pb2-ns mt0">
                 <h1 class="f3 f2-ns fw6 lh-solid-ns lh-title ttu light-blue">{{ page.name }}</h1>
-                <p>{% lorem 1 %}</p>
+                <p>This Equity Data Explorer offers interactive tools from many data sources that focus on equity measures and current issues in Pinellas County. With a combination of data and the wisdom of people with lived experience it will be possible to create approaches that will have the deepest impact. All the data and information are available in printed material so the tools can be used by residents without high-speed internet. </p>
                 <hr class="thin">
                 <h2 class="f4 f3-ns fw6 gray ttu">Select a Topic</h2>
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Justice">Justice</a>
@@ -33,10 +33,18 @@
                 <option value="Housing">Housing</option>
                 <option value="Civic Participation">Civic Participation</option>
               </select>
-              <a id="selected-btn" class="f6 fw6 link grow no-underline br2 br--left-ns ba ph3 pv2 mb2 dib ttu white bg-light-blue " href="#0">Rental</a>
-              <a class="f6 fw6 link grow no-underline ba br2 br--right-ns ph3 pv2 mb2 nl1 dib ttu light-blue " href="#0">Evictions</a>
-              <h2 class="f4 f4-ns fw6 lh-solid-ns lh-title ttu light-blue">Median Gross Rent as a Percentage of Household Income</h2>
-              <p>{% lorem 1 %}</p>
+              <div id="sub-nav-buttons">
+                <!-- TO DO: Populate Subnav buttons based on issue-select selection -->
+                <a id="selected-btn" class="f6 fw6 link grow no-underline br2 br--left-ns ba ph3 pv2 mb2 dib ttu white bg-light-blue " href="#0">Rental</a>
+                <a class="f6 fw6 link grow no-underline ba br2 br--right-ns ph3 pv2 mb2 nl1 dib ttu light-blue " href="#0">Evictions</a>
+              </div>
+              <div id="sub-nav-data-links">
+                <a href="">Evictions</a>
+              </div>
+              <div id="dataset-metadata">
+                <h2 id="dataset-title" class="f4 f4-ns fw6 lh-solid-ns lh-title ttu light-blue"></h2>
+                <p id="dataset-description"></p>
+              </div>              
             </div>
         </div>
     </div>
@@ -66,6 +74,7 @@
 {% block extra_js %}
     <script>
         const static_url = "{% get_static_prefix %}";
+        const lorem = "{% lorem 1 %}";
     </script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>

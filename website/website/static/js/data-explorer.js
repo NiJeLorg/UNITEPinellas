@@ -18,9 +18,10 @@ let selected_sl;
 let geoFeatures = {'150':{}, '140':{}, '860':{}, '795':{}, '160':{}, '620':{}, '610':{}, '500':{}};
 let geoJsons = {'150':{}, '140':{}, '860':{}, '795':{}, '160':{}, '620':{}, '610':{}, '500':{}};
 let dataAPICall;
-let dataTableName;
+let selected_category;
 let selected_tableID;
-let selected_tableKey;
+let selected_numerator;
+let selected_denominator;
 let selected_data_type;
 let color;
 
@@ -91,14 +92,18 @@ function mergeDataWGeoFeatures() {
 	console.log(dataAPICall);
 	d3.json(dataAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
-		// set data table name
-		dataTableName = json.tables[selected_tableID].title;
 		let values = [];
+		let value;
+		let properties;
 		for (let geoid in json.data) {
 			for (let i = 0; i < geoFeatures[selected_sl].length; i++) {
 				if (geoid == geoFeatures[selected_sl][i].properties.created_geoid) {
 					geoFeatures[selected_sl][i].properties[selected_tableID] = json.data[geoid][selected_tableID];
-					values.push(geoFeatures[selected_sl][i].properties[selected_tableID].estimate[selected_tableKey])
+					properties = geoFeatures[selected_sl][i].properties[selected_tableID]
+					value = calcValue(properties);
+					// set value for use later
+					geoFeatures[selected_sl][i].properties[selected_tableID].value = value
+					values.push(value);
 				}
 			}
 
@@ -111,6 +116,29 @@ function mergeDataWGeoFeatures() {
 		geoJsons[selected_sl].addTo(map);
 	});
 
+}
+
+function calcValue(properties) {
+	let numerators = [];
+	let denominator;
+	let num = 0;
+	let value = 0;
+	// loop through numerators and sum
+	let key;
+	for (let j = 0; j < metadata[selected_category][selected_tableID]['numerator'].length; j++) {
+		key = metadata[selected_category][selected_tableID]['numerator'][j];
+		numerators.push(properties.estimate[key])
+	}
+	num = sumNumerator(numerators);
+	// normalize if denom
+	let denom_key = metadata[selected_category][selected_tableID]['denominator']
+	if (denom_key) {
+		denominator = properties.estimate[denom_key]
+		value = normalize(num, denominator)
+	} else {
+		value = num;
+	}
+	return value;
 }
 
 function outlineStyle(feature) {
@@ -130,7 +158,7 @@ function outlineOnEachFeature(feature, layer) {
 
 function style(feature) {
 	return {
-		fillColor: color(feature.properties[selected_tableID].estimate[selected_tableKey]),
+		fillColor: color(feature.properties[selected_tableID].value),
 		weight: 0.5,
 		opacity: 1,
 		color: 'white',
@@ -189,23 +217,26 @@ function onLayerClick(e) {
 			console.log(parents_json);
 
 			// update the popup
-			let popupContent = "<h3 class='f5 mb1 gray ttu'>"+dataTableName+"</h3>";
+			let popupContent = "<h3 class='f5 mb1 gray ttu'>" + metadata[selected_category][selected_tableID]['title'] + "</h3>";
 			let display_value;
 
 			// loop through parents and pull estimates
 			for (let i = 0; i < json.parents.length; i++) {
 
-				console.log(json.parents[i])
-				// look up the estimate via geoid and table name
-				console.log(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey])
+				properties = parents_json.data[json.parents[i].geoid][selected_tableID]
+				value = calcValue(properties);
 
-				if (parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]){
-					if (selected_data_type == 'pct') {
-						display_value = percentify(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]);
+				if (value){
+					if (selected_data_type == 'pct_format') {
+						display_value = percentFormat(value);
+					} else if (selected_data_type == 'pct') {
+						display_value = percentify(value);
 					} else if (selected_data_type == 'dollar') {
-						display_value = dollarify(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]);
+						display_value = dollarify(value);
+					} else if (selected_data_type == 'date') {
+						display_value = value;
 					} else {
-						display_value = numberWithCommas(parents_json.data[json.parents[i].geoid][selected_tableID].estimate[selected_tableKey]);
+						display_value = numberWithCommas(value);
 					}
 				} else {
 					display_value = "N/A";
@@ -236,14 +267,18 @@ function onEachFeature(feature, layer) {
 		click: onLayerClick
 	});
 
-	if (layer.feature.properties[selected_tableID].estimate[selected_tableKey]){
-		if (selected_data_type == 'pct') {
-			display_value = percentify(layer.feature.properties[selected_tableID].estimate[selected_tableKey]);
+	if (layer.feature.properties[selected_tableID].value){
+		if (selected_data_type == 'pct_format') {
+			display_value = percentFormat(layer.feature.properties[selected_tableID].value);
+		} else if (selected_data_type == 'pct') {
+			display_value = percentify(layer.feature.properties[selected_tableID].value);
 		} else if (selected_data_type == 'dollar') {
-			display_value = dollarify(layer.feature.properties[selected_tableID].estimate[selected_tableKey]);
+			display_value = dollarify(layer.feature.properties[selected_tableID].value);
+		} else if (selected_data_type == 'date') {
+			display_value = layer.feature.properties[selected_tableID].value;
 		} else {
-			display_value = numberWithCommas(layer.feature.properties[selected_tableID].estimate[selected_tableKey]);
-		}	
+			display_value = numberWithCommas(layer.feature.properties[selected_tableID].value);
+		}
 	} else {
 		display_value = "N/A";
 	}
@@ -256,7 +291,86 @@ function onEachFeature(feature, layer) {
 	layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Loading Animation Here</h3>");
 }
 
+// populate dataset
+function populateDataset() {
+	selected_data_type = metadata[selected_category][selected_tableID]['data_type'];
+	$("#dataset-title").text(metadata[selected_category][selected_tableID]['title']);
+	$("#dataset-description").text(metadata[selected_category][selected_tableID]['description']);
+
+	// join data to geographies
+	removeGeojson();
+	updateGeography();
+}
+
+
+// listeners
+$('#geography-select').on('change', function (e) {
+	removeGeojson();
+	selected_sl = this.value;
+	updateGeography();
+});
+
+$('.topic').click(function() {
+	$('#intro-text-and-buttons').hide("slow");
+	$('#controls').show("slow");
+	// set dropdown based on clicked button
+	$("#issue-select").val($(this).text());
+	$("#issue-select").trigger("change");
+	//TO DO: set up options based on selected category
+});
+
+$("#issue-select").on('change', function (e) {
+	// TO DO assign default layer for each category
+	selected_category = this.value
+	if (selected_category == "Housing") {
+		selected_tableID = 'B25003';
+	}
+
+	// print list of variables
+	$('#sub-nav-data-links').html('');
+	let link;
+	for (let key in metadata[this.value]) {
+		link = '<a class="data-link" href="#' + key + '">' + metadata[this.value][key]['title'] + '</a><br /><br />'
+		$('#sub-nav-data-links').append(link);
+	}
+
+	populateDataset();
+
+
+});
+
+$('#sub-nav-data-links').on('click', '.data-link', function() {
+	selected_tableID = $(this).attr('href').substring(1);
+	console.log(selected_tableID);
+
+	populateDataset();
+
+});
+
+
+// utility functions
+function isEmpty(obj) {
+	return Object.keys(obj).length === 0;
+}
+
+function sumNumerator(values) {
+	let sum = 0;
+	for (let i = 0; i < values.length; i++) {
+		sum = values[i] + sum;
+	}
+	return sum;
+}
+
+function normalize(num, denom) {
+	return num / denom;
+}
+
+function percentFormat(value) {
+	return value.toFixed(1) + "%";
+}
+
 function percentify(value) {
+	value = value * 100;
 	return value.toFixed(1) + "%";
 }
 
@@ -285,48 +399,63 @@ legend.onAdd = function (map) {
 	return div;
 };
 
-// listeners
-$('#geography-select').on('change', function (e) {
-	removeGeojson();
-	selected_sl = this.value;
-	updateGeography();
-});
 
-$('.topic').click(function() {
-	$('#intro-text-and-buttons').hide("slow");
-	$('#controls').show("slow");
-	// set dropdown based on clicked button
-	$("#issue-select").val($(this).text());
-	$("#issue-select").trigger("change");
-	//TO DO: set up options based on selected category
-});
+/* maps TO DO: build map of issues, tables*/
+let metadata = {'Justice':{}, 'Children and Youth':{}, 'Economics':{}, 'Housing':{}, 'Civic Participation':{}}
 
-$("#issue-select").on('change', function (e) {
-	// TO DO assign default layer for each issue
-	if (this.value == "Housing") {
-		selected_tableID = 'B25071';
-		selected_tableKey = 'B25071001';
-		selected_data_type = 'pct';
-	}
+// Housing variables
+metadata['Housing']['B25003'] = {
+	'numerator': ['B25003002'],
+	'denominator': 'B25003001',
+	'data_type': 'pct',
+	'title': 'Percentage Renter Occupied Housing Units',
+	'description': lorem
+}
 
-	// join data to geographies
-	removeGeojson();
-	updateGeography();
+metadata['Housing']['B25123'] = {
+	'numerator': ['B25123009','B25123010','B25123011','B25123012'],
+	'denominator': 'B25123008',
+	'data_type': 'pct',
+	'title': 'Percentage of Occupied Rental Units with Substandard Conditions',
+	'description': lorem
+}
 
-});
+metadata['Housing']['B25035'] = {
+	'numerator': ['B25035001'],
+	'denominator': null,
+	'data_type': 'date',
+	'title': 'Median Year of Housing Unit Construction',
+	'description': lorem
+}
+
+metadata['Housing']['B25071'] = {
+	'numerator': ['B25071001'],
+	'denominator': null,
+	'data_type': 'pct_format',
+	'title': 'Median Gross Rent as a Percentage of Household Income',
+	'description': lorem
+}
+
+metadata['Housing']['B25070'] = {
+	'numerator': ['B25070007', 'B25070008', 'B25070009', 'B25070010'],
+	'denominator': 'B25070001',
+	'data_type': 'pct',
+	'title': 'Percentage of Cost Burdened Renter-Occupied Units (>30% Income Spent on Housing)',
+	'description': lorem
+}
+
+metadata['Housing']['B25091'] = {
+	'numerator': ['B25091008', 'B25091009', 'B25091010', 'B25091011', 'B25091019', 'B25091020', 'B25091021', 'B25091022'],
+	'denominator': 'B25091001',
+	'data_type': 'pct',
+	'title': 'Percentage of Cost Burdened Owner-Occupied Units (>30% Income Spent on Housing)',
+	'description': lorem
+}
+
+
 
 
 
 
 // initialize
 window.onload = initMap;
-
-// utility functions
-function isEmpty(obj) {
-	return Object.keys(obj).length === 0;
-}
-
-
-/* maps TO DO: build map of issues, tables*/
-let metadata = {'Justice':{}, 'Children and Youth':{}, 'Economics':{}, 'Housing':{}, 'Civic Participation':{}}
-metadata['Housing'] = {'B25071': 'B25071001'}
