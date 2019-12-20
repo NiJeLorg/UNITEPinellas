@@ -38,13 +38,35 @@
                 <a id="selected-btn" class="f6 fw6 link grow no-underline br2 br--left-ns ba ph3 pv2 mb2 dib ttu white bg-light-blue " href="#0">Rental</a>
                 <a class="f6 fw6 link grow no-underline ba br2 br--right-ns ph3 pv2 mb2 nl1 dib ttu light-blue " href="#0">Evictions</a>
               </div>
-              <div id="sub-nav-data-links">
-                <a href="">Evictions</a>
+              <div class="pt1 accordion">
+                <span class="target-fix" id="accordion"></span>
+                <div>
+                    <span class="target-fix" id="accordion1"></span>
+                    <a href="#accordion1" id="open-accordion1" class="link light-blue" title="open">
+                        <div class="pointer">
+                            <div class="fr nt1">
+                                <span class="chevron-small bottom"></span>
+                            </div>
+                            <h4>Show Metrics</h4>
+                        </div>
+                    </a>
+                    <a href="#accordion" id="close-accordion1" class="link light-blue" title="close">
+                        <div class="pointer">
+                            <div class="fr mt1">
+                                <span class="chevron-small"></span>
+                            </div>
+                            <h4>Hide Metrics</h4>
+                        </div>
+                    </a>
+                    <div id="sub-nav-data-links" class="accordion-content bb pl2">
+                      <a href="">Evictions</a>
+                    </div>
+                </div>
               </div>
               <div id="dataset-metadata">
                 <h2 id="dataset-title" class="f4 f4-ns fw6 lh-solid-ns lh-title ttu light-blue"></h2>
                 <p id="dataset-description"></p>
-              </div>              
+              </div>
             </div>
         </div>
     </div>

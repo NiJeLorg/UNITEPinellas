@@ -190,7 +190,7 @@ function onLayerClick(e) {
 	let parentGeoIDs = []
 	let parentData = []
 
-	// call parents API 
+	// call parents API
 	parentsAPICall = baseParentsURL + e.target.feature.properties.created_geoid + '/parents'
 	console.log(parentsAPICall)
 
@@ -217,7 +217,7 @@ function onLayerClick(e) {
 			console.log(parents_json);
 
 			// update the popup
-			let popupContent = "<h3 class='f5 mb1 gray ttu'>" + metadata[selected_category][selected_tableID]['title'] + "</h3>";
+			let popupContent = "<h3 class='f5 mb2 gray ttu'>" + metadata[selected_category][selected_tableID]['title'] + "</h3>";
 			let display_value;
 
 			// loop through parents and pull estimates
@@ -243,18 +243,18 @@ function onLayerClick(e) {
 				}
 
 
-				popupContent += "<p class='gray'><span class='b'>"+json.parents[i].display_name+"</span>: "+display_value+"</p>";
-			}		
-			
-			
+				popupContent += "<p class='gray bb pb2'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f4 v-mid'>"+display_value+"</span></p>";
+			}
+
+
 			// popupContent += "<p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>";
 			popupContent += "<a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue href='#0'>Report</a>";
 			popup.setContent( popupContent );
         	popup.update();
 
 
-		});	
-		
+		});
+
 
 	});
 
@@ -330,7 +330,7 @@ $("#issue-select").on('change', function (e) {
 	$('#sub-nav-data-links').html('');
 	let link;
 	for (let key in metadata[this.value]) {
-		link = '<a class="data-link" href="#' + key + '">' + metadata[this.value][key]['title'] + '</a><br /><br />'
+		link = '<a class="data-link mb3 db link light-blue" href="#' + key + '">' + metadata[this.value][key]['title'] + '</a>'
 		$('#sub-nav-data-links').append(link);
 	}
 
