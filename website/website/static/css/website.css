@@ -5,7 +5,7 @@
 }
 
 .bg-white-header {
-    background: url(../img/interior-header.png) top center no-repeat;
+    background: url(../img/interior-header.png) top center no-repeat white;
 }
 
 .hamburger {
@@ -15,7 +15,6 @@
     width: 3em;
     height: 1.5em;
     margin-right: 2em;
-    margin-bottom: 1.75em;
 }
 
 .hamburger:before {
@@ -168,6 +167,14 @@ select#issue-select {
 
 .right {float: right;}
 
+select#issue-select {
+  height: 35px;
+}
+
+a#selected-btn {
+  border-color: #4ba0d1;
+}
+
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
@@ -209,11 +216,19 @@ select#issue-select {
     padding-bottom: 2rem;
     padding-top: 2rem;
 }
+#controls .accordion span:target ~ .accordion-content {
+    padding-bottom: 0;
+    padding-top: 0;
+}
 
 @media (min-width: 60em) {
     .accordion span:target ~ .accordion-content {
         padding-bottom: 2rem;
         padding-top: 1rem;
+    }
+    #controls .accordion span:target ~ .accordion-content {
+        padding-bottom: 0;
+        padding-top: 0;
     }
 }
 

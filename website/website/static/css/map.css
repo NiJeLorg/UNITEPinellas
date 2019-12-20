@@ -1,8 +1,19 @@
+
 #map {
 }
 
+.bg-lighter-gray {
+	background-color: #f7f7f7;
+}
+
 .map-height {
-	height: 83%;
+	height: 83.75%;
+}
+
+hr.thin {
+	height: 1px;
+	border: none;
+	background-color: #ccc;
 }
 
 .info {
@@ -30,13 +41,12 @@
 	opacity: 0.7;
 }
 
-
 .leaflet-popup-content-wrapper {
 	border-radius: 4px;
 }
 
 .leaflet-popup-content p {
-	margin-top: 8px;
+	margin: 8px 0;
 }
 
 .leaflet-popup-tip-container {
@@ -53,4 +63,12 @@
 	margin: 0 auto;
 	box-shadow: none;
 	filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4));
+}
+
+.leaflet-tooltip {
+	padding: 2px 8px 3px;
+}
+
+.housing-tooltip {
+	padding: 3px 10px 5px;
 }
