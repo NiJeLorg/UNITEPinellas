@@ -198,11 +198,11 @@ function onLayerClick(e) {
 		if (error) return console.warn(error);
 		// take only one parent if geography if [1] is county level
 		for (let i = 0; i < json.parents.length; i++) {
-			parentGeoIDs.push(json.parents[i].geoid)
-			// // remove national parent level
-			// if (json.parents[i].sumlevel != '010') {
-			// 	parentGeoIDs.push(json.parents[i].geoid)
-			// }
+			// parentGeoIDs.push(json.parents[i].geoid)
+			// remove national parent level
+			if (json.parents[i].sumlevel != '010') {
+				parentGeoIDs.push(json.parents[i].geoid)
+			}
 		}
 		// array to comma sep string
 		const pgeoid_string = parentGeoIDs.join(",")
@@ -222,28 +222,29 @@ function onLayerClick(e) {
 
 			// loop through parents and pull estimates
 			for (let i = 0; i < json.parents.length; i++) {
-
-				properties = parents_json.data[json.parents[i].geoid][selected_tableID]
-				value = calcValue(properties);
-
-				if (value){
-					if (selected_data_type == 'pct_format') {
-						display_value = percentFormat(value);
-					} else if (selected_data_type == 'pct') {
-						display_value = percentify(value);
-					} else if (selected_data_type == 'dollar') {
-						display_value = dollarify(value);
-					} else if (selected_data_type == 'date') {
-						display_value = value;
+				// remove national parent level
+				if (json.parents[i].sumlevel != '010') {
+					properties = parents_json.data[json.parents[i].geoid][selected_tableID]
+					value = calcValue(properties);
+	
+					if (value){
+						if (selected_data_type == 'pct_format') {
+							display_value = percentFormat(value);
+						} else if (selected_data_type == 'pct') {
+							display_value = percentify(value);
+						} else if (selected_data_type == 'dollar') {
+							display_value = dollarify(value);
+						} else if (selected_data_type == 'date') {
+							display_value = value;
+						} else {
+							display_value = numberWithCommas(value);
+						}
 					} else {
-						display_value = numberWithCommas(value);
+						display_value = "N/A";
 					}
-				} else {
-					display_value = "N/A";
+	
+					popupContent += "<p class='gray'><span class='b'>"+json.parents[i].display_name+"</span>: "+display_value+"</p>";				
 				}
-
-
-				popupContent += "<p class='gray'><span class='b'>"+json.parents[i].display_name+"</span>: "+display_value+"</p>";
 			}		
 			
 			
