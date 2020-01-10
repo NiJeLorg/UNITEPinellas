@@ -208,11 +208,19 @@ a#selected-btn {
     padding-bottom: 2rem;
     padding-top: 2rem;
 }
+#controls .accordion span:target ~ .accordion-content {
+    padding-bottom: 0;
+    padding-top: 0;
+}
 
 @media (min-width: 60em) {
     .accordion span:target ~ .accordion-content {
         padding-bottom: 2rem;
         padding-top: 1rem;
+    }
+    #controls .accordion span:target ~ .accordion-content {
+        padding-bottom: 0;
+        padding-top: 0;
     }
 }
 
