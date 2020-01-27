@@ -247,13 +247,16 @@ function onLayerClick(e) {
 						display_value = "N/A";
 					}
 	
-					popupContent += "<p class='gray bb pb2'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f4 v-mid'>"+display_value+"</span></p>";				
+					// popupContent += "<p class='gray bb pb2'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f4 v-mid'>"+display_value+"</span></p>";	
+					popupContent += "<p class='near-black bg-dark-blue pt2 pb2'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f5 v-mid'>"+display_value+"</span></p>";
+
 				}
+
 			}
 
 
 			// popupContent += "<p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>";
-			popupContent += "<a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue href='#0'>Report</a>";
+			popupContent += "<a class='f7 fw6 link grow no-underline b--light-blue ba br2 w-75 center tc ph3 pv1 mb2 mt3 db ttu gray href='#0'>Report</a>";
 			popup.setContent( popupContent );
         	popup.update();
 
@@ -293,7 +296,7 @@ function onEachFeature(feature, layer) {
 
 	//layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Title</h3><p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue  href='#0'>Report</a>");
 
-	layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Loading Animation Here</h3>");
+	layer.bindPopup("<img src='/static/img/loading.gif'>");
 }
 
 // populate dataset
@@ -345,7 +348,7 @@ $("#issue-select").on('change', function (e) {
 		} else {
 			padding = '';
 		}
-		link = '<a class="data-link mb3 db link light-blue '+ padding +' " href="#' + key + '">' + metadata[this.value][key]['title'] + '</a>'
+		link = '<a class="data-link mb3 db link light-blue dim '+ padding +' " href="#' + key + '">' + metadata[this.value][key]['title'] + '</a>'
 		$('#sub-nav-data-links').append(link);
 	}
 

@@ -97,6 +97,14 @@ img.richtext-image {
   height: auto;
 }
 
+select#issue-select {
+  height: 34px;
+}
+
+#selected-btn {
+  border: 1px solid #4ba0d1;
+}
+
 /* The side navigation menu */
 .sidenav {
     height: 100%; /* 100% Full-height */
