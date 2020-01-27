@@ -91,7 +91,7 @@ function mergeDataWGeoFeatures() {
 	// strip out '-x' from selected_tableID before passing to API
 	const strip_selected_tableID = selected_tableID.split('-')[0];
 	dataAPICall = baseDataURL + "table_ids=" + strip_selected_tableID + "&geo_ids=" + selected_sl + '|' + pcgid;
-	console.log(dataAPICall);
+	console.log("data API call: ", dataAPICall);
 	d3.json(dataAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
 		let values = [];
