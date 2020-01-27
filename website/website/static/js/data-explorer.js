@@ -88,7 +88,9 @@ function removeGeojson() {
 function mergeDataWGeoFeatures() {
 	// if the summary level is not city
 	// select data from a specific table and merge with geoFeatures
-	dataAPICall = baseDataURL + "table_ids=" + selected_tableID + "&geo_ids=" + selected_sl + '|' + pcgid;
+	// strip out '-x' from selected_tableID before passing to API
+	const strip_selected_tableID = selected_tableID.split('-')[0];
+	dataAPICall = baseDataURL + "table_ids=" + strip_selected_tableID + "&geo_ids=" + selected_sl + '|' + pcgid;
 	console.log(dataAPICall);
 	d3.json(dataAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
@@ -98,7 +100,7 @@ function mergeDataWGeoFeatures() {
 		for (let geoid in json.data) {
 			for (let i = 0; i < geoFeatures[selected_sl].length; i++) {
 				if (geoid == geoFeatures[selected_sl][i].properties.created_geoid) {
-					geoFeatures[selected_sl][i].properties[selected_tableID] = json.data[geoid][selected_tableID];
+					geoFeatures[selected_sl][i].properties[selected_tableID] = json.data[geoid][strip_selected_tableID];
 					properties = geoFeatures[selected_sl][i].properties[selected_tableID]
 					value = calcValue(properties);
 					// set value for use later
@@ -210,7 +212,9 @@ function onLayerClick(e) {
 		console.log(pgeoid_string);
 
 		// set up data API call for parents
-		parentsDataAPICall = baseDataURL + "table_ids=" + selected_tableID + "&geo_ids=" + pgeoid_string;
+		// strip out '-x' from selected_tableID before passing to API
+		const strip_selected_tableID = selected_tableID.split('-')[0];
+		parentsDataAPICall = baseDataURL + "table_ids=" + strip_selected_tableID + "&geo_ids=" + pgeoid_string;
 		console.log(parentsDataAPICall);
 		d3.json(parentsDataAPICall).then(function(parents_json, parents_error) {
 			if (parents_error) return console.warn(parents_error);
@@ -224,10 +228,10 @@ function onLayerClick(e) {
 			for (let i = 0; i < json.parents.length; i++) {
 				// remove national parent level
 				if (json.parents[i].sumlevel != '010') {
-					properties = parents_json.data[json.parents[i].geoid][selected_tableID]
+					properties = parents_json.data[json.parents[i].geoid][strip_selected_tableID]
 					value = calcValue(properties);
 	
-					if (value){
+					if (value || value == 0){
 						if (selected_data_type == 'pct_format') {
 							display_value = percentFormat(value);
 						} else if (selected_data_type == 'pct') {
@@ -268,7 +272,7 @@ function onEachFeature(feature, layer) {
 		click: onLayerClick
 	});
 
-	if (layer.feature.properties[selected_tableID].value){
+	if (layer.feature.properties[selected_tableID].value || layer.feature.properties[selected_tableID].value == 0){
 		if (selected_data_type == 'pct_format') {
 			display_value = percentFormat(layer.feature.properties[selected_tableID].value);
 		} else if (selected_data_type == 'pct') {
@@ -328,14 +332,20 @@ $("#issue-select").on('change', function (e) {
 	}
 
 	if (selected_category == "Economics") {
-		selected_tableID = 'B23025';
+		selected_tableID = 'B23025-1';
 	}
 
 	// print list of variables
 	$('#sub-nav-data-links').html('');
 	let link;
+	let padding;
 	for (let key in metadata[this.value]) {
-		link = '<a class="data-link mb3 db link light-blue" href="#' + key + '">' + metadata[this.value][key]['title'] + '</a>'
+		if (/[a-zA-Z]/.test(key.slice(-1))) {
+			padding = 'pl2';
+		} else {
+			padding = '';
+		}
+		link = '<a class="data-link mb3 db link light-blue '+ padding +' " href="#' + key + '">' + metadata[this.value][key]['title'] + '</a>'
 		$('#sub-nav-data-links').append(link);
 	}
 
@@ -458,15 +468,49 @@ metadata['Housing']['B25091'] = {
 }
 
 // Economics variables
-metadata['Economics']['B23025'] = {
+metadata['Economics']['B23025-1'] = {
 	'numerator': ['B23025005'],
-	'denominator': 'B23025003',
+	'denominator': 'B23025001',
 	'data_type': 'pct',
 	'title': 'Unemployment Rate',
 	'description': lorem
 }
 
-metadata['Economics']['B23025'] = {
+metadata['Economics']['C23002D'] = {
+	'numerator': ['C23002D008', 'C23002D013', 'C23002D021', 'C23002D026'],
+	'denominator': 'C23002D001',
+	'data_type': 'pct',
+	'title': 'Unemployment Rate (Asian Alone)',
+	'description': lorem
+}
+
+metadata['Economics']['C23002B'] = {
+	'numerator': ['C23002B008', 'C23002B013', 'C23002B021', 'C23002B026'],
+	'denominator': 'C23002B001',
+	'data_type': 'pct',
+	'title': 'Unemployment Rate (Black or African American Alone)',
+	'description': lorem
+}
+
+metadata['Economics']['C23002H'] = {
+	'numerator': ['C23002H008', 'C23002H013', 'C23002H021', 'C23002H026'],
+	'denominator': 'C23002H001',
+	'data_type': 'pct',
+	'title': 'Unemployment Rate (White Alone, Not Hispanic or Latino)',
+	'description': lorem
+}
+
+
+
+metadata['Economics']['C23002B'] = {
+	'numerator': ['C23002B008', 'C23002B013', 'C23002B021', 'C23002B026'],
+	'denominator': 'C23002B001',
+	'data_type': 'pct',
+	'title': 'Unemployment Rate (Black or African American Alone)',
+	'description': lorem
+}
+
+metadata['Economics']['B23025-2'] = {
 	'numerator': ['B23025007'],
 	'denominator': 'B23025001',
 	'data_type': 'pct',
