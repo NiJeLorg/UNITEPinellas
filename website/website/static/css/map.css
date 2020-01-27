@@ -72,3 +72,6 @@ hr.thin {
 .housing-tooltip {
 	padding: 3px 10px 5px;
 }
+.leaflet-container .leaflet-popup a {
+	color: #777;
+}
