@@ -29,7 +29,7 @@ let color;
 if ($('#geography-select').val()) {
 	selected_sl = $('#geography-select').val();
 } else {
-	selected_sl = '795'; // default summary level is Census Defined Place
+	selected_sl = '795'; // default summary level is ZCTA
 }
 
 
@@ -327,6 +327,10 @@ $("#issue-select").on('change', function (e) {
 		selected_tableID = 'B25003';
 	}
 
+	if (selected_category == "Economics") {
+		selected_tableID = 'B23025';
+	}
+
 	// print list of variables
 	$('#sub-nav-data-links').html('');
 	let link;
@@ -452,6 +456,28 @@ metadata['Housing']['B25091'] = {
 	'title': 'Percentage of Cost Burdened Owner-Occupied Units (>30% Income Spent on Housing)',
 	'description': lorem
 }
+
+// Economics variables
+metadata['Economics']['B23025'] = {
+	'numerator': ['B23025005'],
+	'denominator': 'B23025003',
+	'data_type': 'pct',
+	'title': 'Unemployment Rate',
+	'description': lorem
+}
+
+metadata['Economics']['B23025'] = {
+	'numerator': ['B23025007'],
+	'denominator': 'B23025001',
+	'data_type': 'pct',
+	'title': 'Percent Not in Labor Force',
+	'description': lorem
+}
+
+// TO DO: Add sex, race and ethnicity variables for unemployment rate
+
+
+
 
 
 
