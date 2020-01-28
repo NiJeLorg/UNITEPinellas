@@ -24,6 +24,7 @@ let selected_numerator;
 let selected_denominator;
 let selected_data_type;
 let color;
+let text_color;
 
 // check to see which value is selected in the geography drop down
 if ($('#geography-select').val()) {
@@ -105,13 +106,19 @@ function mergeDataWGeoFeatures() {
 					value = calcValue(properties);
 					// set value for use later
 					geoFeatures[selected_sl][i].properties[selected_tableID].value = value
-					values.push(value);
+					if (value || value == 0) {
+						values.push(value);
+					}
 				}
 			}
 
 		}
 		// create color scale
-		color = d3.scaleSequentialQuantile(values, d3.interpolateBlues)
+		const unique_values = values.filter(onlyUnique);
+		color = d3.scaleSequentialQuantile(unique_values, d3.interpolateBlues)
+		const sum = unique_values.reduce((a, b) => a + b, 0);
+		const avg_times_1_25 = (sum / unique_values.length)*1.25 || 0;
+		text_color = d3.scaleThreshold().domain([avg_times_1_25]).range(['#111', 'white'])
 
 		// create geojson
 		geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: style, onEachFeature: onEachFeature});
@@ -208,7 +215,6 @@ function onLayerClick(e) {
 		}
 		// array to comma sep string
 		const pgeoid_string = parentGeoIDs.join(",")
-
 		console.log(pgeoid_string);
 
 		// set up data API call for parents
@@ -238,6 +244,8 @@ function onLayerClick(e) {
 							display_value = percentify(value);
 						} else if (selected_data_type == 'dollar') {
 							display_value = dollarify(value);
+						} else if (selected_data_type == 'decimal') {
+							display_value = value.toFixed(2);
 						} else if (selected_data_type == 'date') {
 							display_value = value;
 						} else {
@@ -247,8 +255,7 @@ function onLayerClick(e) {
 						display_value = "N/A";
 					}
 	
-					// popupContent += "<p class='gray bb pb2'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f4 v-mid'>"+display_value+"</span></p>";	
-					popupContent += "<p class='near-black bg-dark-blue pt2 pb2'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f5 v-mid'>"+display_value+"</span></p>";
+					popupContent += "<p class='pt2 pb2' style='background-color:"+color(value)+"; color:"+ text_color(value) +"'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f5 v-mid'>"+display_value+"</span></p>";
 
 				}
 
@@ -256,7 +263,7 @@ function onLayerClick(e) {
 
 
 			// popupContent += "<p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>";
-			popupContent += "<a class='f7 fw6 link grow no-underline b--light-blue ba br2 w-75 center tc ph3 pv1 mb2 mt3 db ttu gray href='#0'>Report</a>";
+			//popupContent += "<a class='f7 fw6 link grow no-underline b--light-blue ba br2 w-75 center tc ph3 pv1 mb2 mt3 db ttu gray href='#0'>Report</a>";
 			popup.setContent( popupContent );
         	popup.update();
 
@@ -282,6 +289,8 @@ function onEachFeature(feature, layer) {
 			display_value = percentify(layer.feature.properties[selected_tableID].value);
 		} else if (selected_data_type == 'dollar') {
 			display_value = dollarify(layer.feature.properties[selected_tableID].value);
+		} else if (selected_data_type == 'decimal') {
+			display_value = layer.feature.properties[selected_tableID].value.toFixed(2);
 		} else if (selected_data_type == 'date') {
 			display_value = layer.feature.properties[selected_tableID].value;
 		} else {
@@ -338,12 +347,17 @@ $("#issue-select").on('change', function (e) {
 		selected_tableID = 'B23025-1';
 	}
 
+	if (selected_category == "Children and Youth") {
+		selected_tableID = 'B17001';
+	}
+
 	// print list of variables
 	$('#sub-nav-data-links').html('');
 	let link;
 	let padding;
 	for (let key in metadata[this.value]) {
-		if (/[a-zA-Z]/.test(key.slice(-1))) {
+		const strip_key = key.split('-')[0];
+		if (/[a-zA-Z]/.test(strip_key.slice(-1))) {
 			padding = 'pl2';
 		} else {
 			padding = '';
@@ -399,6 +413,10 @@ function dollarify(value) {
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}	
 
 
 legend.onAdd = function (map) {
@@ -479,7 +497,7 @@ metadata['Economics']['B23025-1'] = {
 	'description': lorem
 }
 
-metadata['Economics']['C23002D'] = {
+metadata['Economics']['C23002D-1'] = {
 	'numerator': ['C23002D008', 'C23002D013', 'C23002D021', 'C23002D026'],
 	'denominator': 'C23002D001',
 	'data_type': 'pct',
@@ -495,21 +513,19 @@ metadata['Economics']['C23002B'] = {
 	'description': lorem
 }
 
+metadata['Economics']['C23002I'] = {
+	'numerator': ['C23002I008', 'C23002I013', 'C23002I021', 'C23002I026'],
+	'denominator': 'C23002I001',
+	'data_type': 'pct',
+	'title': 'Unemployment Rate (Hispanic or Latino)',
+	'description': lorem
+}
+
 metadata['Economics']['C23002H'] = {
 	'numerator': ['C23002H008', 'C23002H013', 'C23002H021', 'C23002H026'],
 	'denominator': 'C23002H001',
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (White Alone, Not Hispanic or Latino)',
-	'description': lorem
-}
-
-
-
-metadata['Economics']['C23002B'] = {
-	'numerator': ['C23002B008', 'C23002B013', 'C23002B021', 'C23002B026'],
-	'denominator': 'C23002B001',
-	'data_type': 'pct',
-	'title': 'Unemployment Rate (Black or African American Alone)',
 	'description': lorem
 }
 
@@ -521,12 +537,207 @@ metadata['Economics']['B23025-2'] = {
 	'description': lorem
 }
 
-// TO DO: Add sex, race and ethnicity variables for unemployment rate
+metadata['Economics']['C23002D-2'] = {
+	'numerator': ['C23002D009', 'C23002D014', 'C23002D022', 'C23002D027'],
+	'denominator': 'C23002D001',
+	'data_type': 'pct',
+	'title': 'Percent Not in Labor Force (Asian Alone)',
+	'description': lorem
+}
+
+metadata['Economics']['C23002B-2'] = {
+	'numerator': ['C23002B009', 'C23002B014', 'C23002B022', 'C23002B027'],
+	'denominator': 'C23002B001',
+	'data_type': 'pct',
+	'title': 'Percent Not in Labor Force (Black or African American Alone)',
+	'description': lorem
+}
+
+metadata['Economics']['C23002I-2'] = {
+	'numerator': ['C23002I009', 'C23002I014', 'C23002I022', 'C23002I027'],
+	'denominator': 'C23002I001',
+	'data_type': 'pct',
+	'title': 'Percent Not in Labor Force (Hispanic or Latino)',
+	'description': lorem
+}
+
+metadata['Economics']['C23002H-2'] = {
+	'numerator': ['C23002H009', 'C23002H014', 'C23002H022', 'C23002H027'],
+	'denominator': 'C23002H001',
+	'data_type': 'pct',
+	'title': 'Percent Not in Labor Force (White Alone, Not Hispanic or Latino)',
+	'description': lorem
+}
+
+metadata['Economics']['B19013'] = {
+	'numerator': ['B19013001'],
+	'denominator': null,
+	'data_type': 'dollar',
+	'title': 'Median Household Income',
+	'description': lorem
+}
+
+metadata['Economics']['B19013D'] = {
+	'numerator': ['B19013D001'],
+	'denominator': null,
+	'data_type': 'dollar',
+	'title': 'Median Household Income (Asian Alone Householders)',
+	'description': lorem
+}
+
+metadata['Economics']['B19013B'] = {
+	'numerator': ['B19013B001'],
+	'denominator': null,
+	'data_type': 'dollar',
+	'title': 'Median Household Income (Black or African American Alone Householder)',
+	'description': lorem
+}
+
+metadata['Economics']['B19013I'] = {
+	'numerator': ['B19013I001'],
+	'denominator': null,
+	'data_type': 'dollar',
+	'title': 'Median Household Income (Hispanic or Latino Householder)',
+	'description': lorem
+}
+
+metadata['Economics']['B19013H'] = {
+	'numerator': ['B19013H001'],
+	'denominator': null,
+	'data_type': 'dollar',
+	'title': 'Median Household Income (White Alone, Not Hispanic or Latino Householder)',
+	'description': lorem
+}
+
+metadata['Economics']['B19083'] = {
+	'numerator': ['B19083001'],
+	'denominator': null,
+	'data_type': 'decimal',
+	'title': 'Gini Index of Income Inequality',
+	'description': lorem
+}
 
 
+metadata['Economics']['B17001'] = {
+	'numerator': ['B17001002'],
+	'denominator': 'B17001001',
+	'data_type': 'pct',
+	'title': 'Percent Below Poverty Level',
+	'description': lorem
+}
+
+metadata['Economics']['B17001D'] = {
+	'numerator': ['B17001D002'],
+	'denominator': 'B17001D001',
+	'data_type': 'pct',
+	'title': 'Percent Below Poverty Level (Asian Alone)',
+	'description': lorem
+}
+
+metadata['Economics']['B17001B'] = {
+	'numerator': ['B17001B002'],
+	'denominator': 'B17001B001',
+	'data_type': 'pct',
+	'title': 'Percent Below Poverty Level (Black or African American Alone)',
+	'description': lorem
+}
+
+metadata['Economics']['B17001I'] = {
+	'numerator': ['B17001I002'],
+	'denominator': 'B17001I001',
+	'data_type': 'pct',
+	'title': 'Percent Below Poverty Level (Hispanic or Latino)',
+	'description': lorem
+}
+
+metadata['Economics']['B17001H'] = {
+	'numerator': ['B17001H002'],
+	'denominator': 'B17001H001',
+	'data_type': 'pct',
+	'title': 'Percent Below Poverty Level (White Alone, Not Hispanic or Latino)',
+	'description': lorem
+}
+
+metadata['Economics']['B15002'] = {
+	'numerator': ['B15002015', 'B15002016', 'B15002017', 'B15002018', 'B15002032', 'B15002033', 'B15002034', 'B15002035'],
+	'denominator': 'B15002001',
+	'data_type': 'pct',
+	'title': 'Percent Bachelor\'s Degree or Higher',
+	'description': lorem
+}
+
+metadata['Economics']['B08134'] = {
+	'numerator': ['B08134009', 'B08134010'],
+	'denominator': 'B08134001',
+	'data_type': 'pct',
+	'title': 'Percent Workers with 45+ Minute Commute',
+	'description': lorem
+}
+
+metadata['Economics']['B08134-1'] = {
+	'numerator': ['B08134019', 'B08134020'],
+	'denominator': 'B08134001',
+	'data_type': 'pct',
+	'title': 'Percent Workers with 45+ Minute Car, Truck or Van Commute',
+	'description': lorem
+}
+
+metadata['Economics']['B08134-2'] = {
+	'numerator': ['B08134069', 'B08134070'],
+	'denominator': 'B08134001',
+	'data_type': 'pct',
+	'title': 'Percent Workers with 45+ Minute Public Transit Commute',
+	'description': lorem
+}
 
 
+metadata['Children and Youth']['B17001'] = {
+	'numerator': ['B17001004', 'B17001005', 'B17001006', 'B17001007', 'B17001008', 'B17001018', 'B17001019', 'B17001020', 'B17001021', 'B17001022', 'B17001023'],
+	'denominator': 'B17001001',
+	'data_type': 'pct',
+	'title': 'Percent Children Under 18 Years Below Poverty Level',
+	'description': lorem
+}
 
+metadata['Children and Youth']['B17001D'] = {
+	'numerator': ['B17001D004', 'B17001D005', 'B17001D006', 'B17001D007', 'B17001D008', 'B17001D018', 'B17001D019', 'B17001D020', 'B17001D021', 'B17001D022', 'B17001D023'],
+	'denominator': 'B17001D001',
+	'data_type': 'pct',
+	'title': 'Percent Children Under 18 Years Below Poverty Level (Asian Alone)',
+	'description': lorem
+}
+
+metadata['Children and Youth']['B17001B'] = {
+	'numerator': ['B17001B004', 'B17001B005', 'B17001B006', 'B17001B007', 'B17001B008', 'B17001B018', 'B17001B019', 'B17001B020', 'B17001B021', 'B17001B022', 'B17001B023'],
+	'denominator': 'B17001B001',
+	'data_type': 'pct',
+	'title': 'Percent Children Under 18 Years Below Poverty Level (Black or African American Alone)',
+	'description': lorem
+}
+
+metadata['Children and Youth']['B17001I'] = {
+	'numerator': ['B17001I004', 'B17001I005', 'B17001I006', 'B17001I007', 'B17001I008', 'B17001I018', 'B17001I019', 'B17001I020', 'B17001I021', 'B17001I022', 'B17001I023'],
+	'denominator': 'B17001I001',
+	'data_type': 'pct',
+	'title': 'Percent Children Under 18 Years Below Poverty Level (Hispanic or Latino)',
+	'description': lorem
+}
+
+metadata['Children and Youth']['B17001H'] = {
+	'numerator': ['B17001H004', 'B17001H005', 'B17001H006', 'B17001H007', 'B17001H008', 'B17001H018', 'B17001H019', 'B17001H020', 'B17001H021', 'B17001H022', 'B17001H023'],
+	'denominator': 'B17001H001',
+	'data_type': 'pct',
+	'title': 'Percent Children Under 18 Years Below Poverty Level (White Alone, Not Hispanic or Latino)',
+	'description': lorem
+}
+
+metadata['Children and Youth']['B14005'] = {
+	'numerator': ['B14005013', 'B14005014', 'B14005027','B14005028'],
+	'denominator': 'B14005001',
+	'data_type': 'pct',
+	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School, but in Labor Force',
+	'description': lorem
+}
 
 
 
