@@ -30,7 +30,7 @@ let text_color;
 if ($('#geography-select').val()) {
 	selected_sl = $('#geography-select').val();
 } else {
-	selected_sl = '795'; // default summary level is ZCTA
+	selected_sl = '140'; // default summary level is Census Tracts
 }
 
 
@@ -100,6 +100,7 @@ function mergeDataWGeoFeatures() {
 		let properties;
 		for (let geoid in json.data) {
 			for (let i = 0; i < geoFeatures[selected_sl].length; i++) {
+				value == 0;
 				if (geoid == geoFeatures[selected_sl][i].properties.created_geoid) {
 					geoFeatures[selected_sl][i].properties[selected_tableID] = json.data[geoid][strip_selected_tableID];
 					properties = geoFeatures[selected_sl][i].properties[selected_tableID]
@@ -276,6 +277,8 @@ function onLayerClick(e) {
 }
 
 function onEachFeature(feature, layer) {
+	display_value = '';
+
 	layer.on({
 		mouseover: highlightFeature,
 		mouseout: resetHighlight,
@@ -349,6 +352,10 @@ $("#issue-select").on('change', function (e) {
 
 	if (selected_category == "Children and Youth") {
 		selected_tableID = 'B17001';
+	}
+
+	if (selected_category == "Demographics") {
+		selected_tableID = 'B01001';
 	}
 
 	// print list of variables
@@ -437,7 +444,7 @@ legend.onAdd = function (map) {
 
 
 /* maps TO DO: build map of issues, tables*/
-let metadata = {'Justice':{}, 'Children and Youth':{}, 'Economics':{}, 'Housing':{}, 'Civic Participation':{}}
+let metadata = {'Demographics':{}, 'Justice':{}, 'Children and Youth':{}, 'Economics':{}, 'Housing':{}, 'Civic Participation':{}}
 
 // Housing variables
 metadata['Housing']['B25003'] = {
@@ -740,6 +747,46 @@ metadata['Children and Youth']['B14005'] = {
 }
 
 
+// Demographic variables
+metadata['Demographics']['B01001'] = {
+	'numerator': ['B01001001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Total Population',
+	'description': lorem
+}
+
+metadata['Demographics']['B01001D'] = {
+	'numerator': ['B01001D001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Total Population (Asian Alone)',
+	'description': lorem
+}
+
+metadata['Demographics']['B01001B'] = {
+	'numerator': ['B01001B001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Total Population (Black or African American Alone)',
+	'description': lorem
+}
+
+metadata['Demographics']['B01001I'] = {
+	'numerator': ['B01001I001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Total Population (Hispanic or Latino)',
+	'description': lorem
+}
+
+metadata['Demographics']['B01001H'] = {
+	'numerator': ['B01001H001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Total Population (White Alone, Not Hispanic or Latino)',
+	'description': lorem
+}
 
 
 // initialize

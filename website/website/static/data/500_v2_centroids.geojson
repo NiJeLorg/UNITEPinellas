@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "500_v2_centroids",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::4269" } },
+"features": [
+{ "type": "Feature", "properties": { "STATEFP": "12", "CD115FP": "13", "AFFGEOID": "5001500US1213", "GEOID": "1213", "LSAD": "C2", "CDSESSN": "115", "ALAND": 470881681, "AWATER": 639929451, "created_geoid": "50000US1213", "display_name": "Congressional District 13, FL" }, "geometry": { "type": "Point", "coordinates": [ -82.725987322853967, 27.841438200381759 ] } },
+{ "type": "Feature", "properties": { "STATEFP": "12", "CD115FP": "12", "AFFGEOID": "5001500US1212", "GEOID": "1212", "LSAD": "C2", "CDSESSN": "115", "ALAND": 2225709299, "AWATER": 543289800, "created_geoid": "50000US1212", "display_name": "Congressional District 12, FL" }, "geometry": { "type": "Point", "coordinates": [ -82.43637105217698, 28.279167257334525 ] } }
+]
+}
