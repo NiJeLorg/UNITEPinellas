@@ -107,7 +107,7 @@ function mergeDataWGeoFeatures() {
 					value = calcValue(properties);
 					// set value for use later
 					geoFeatures[selected_sl][i].properties[selected_tableID].value = value
-					if (value || value == 0) {
+					if (typeof value == 'number') {
 						values.push(value);
 					}
 				}
@@ -144,7 +144,12 @@ function calcValue(properties) {
 	let denom_key = metadata[selected_category][selected_tableID]['denominator']
 	if (denom_key) {
 		denominator = properties.estimate[denom_key]
-		value = normalize(num, denominator)
+		if (denominator >= 50) {
+			value = normalize(num, denominator)
+		} else {
+			value = 'Not enough data.'
+		}
+		
 	} else {
 		value = num;
 	}
@@ -167,13 +172,24 @@ function outlineOnEachFeature(feature, layer) {
 
 
 function style(feature) {
-	return {
-		fillColor: color(feature.properties[selected_tableID].value),
-		weight: 0.5,
-		opacity: 1,
-		color: 'white',
-		fillOpacity: 0.5
-	};
+	if (typeof feature.properties[selected_tableID].value == 'number') {
+		return {
+			fillColor: color(feature.properties[selected_tableID].value),
+			weight: 0.5,
+			opacity: 1,
+			color: '#666',
+			fillOpacity: 0.8
+		};
+	} else {
+		return {
+			fillColor: '#aaaaaa',
+			weight: 0.5,
+			opacity: 1,
+			color: '#666',
+			fillOpacity: 0.8
+		};
+	}
+
 }
 
 function highlightFeature(e) {
@@ -183,7 +199,7 @@ function highlightFeature(e) {
 		weight: 2,
 		color: '#666',
 		dashArray: '',
-		fillOpacity: 0.7
+		fillOpacity: 0.9
 	});
 
 	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -230,6 +246,10 @@ function onLayerClick(e) {
 			// update the popup
 			let popupContent = "<h3 class='f5 mb2 gray ttu'>" + metadata[selected_category][selected_tableID]['title'] + "</h3>";
 			let display_value;
+			let background_color_value;
+			let text_color_value;
+			let display_name_width;
+			let display_value_padding;
 
 			// loop through parents and pull estimates
 			for (let i = 0; i < json.parents.length; i++) {
@@ -237,8 +257,12 @@ function onLayerClick(e) {
 				if (json.parents[i].sumlevel != '010') {
 					properties = parents_json.data[json.parents[i].geoid][strip_selected_tableID]
 					value = calcValue(properties);
-	
-					if (value || value == 0){
+					background_color_value = '#aaa';
+					text_color_value = '#111';
+					display_name_width = 'w-70';
+					display_value_padding = 'pl3';
+
+					if (typeof value == 'number'){
 						if (selected_data_type == 'pct_format') {
 							display_value = percentFormat(value);
 						} else if (selected_data_type == 'pct') {
@@ -252,11 +276,21 @@ function onLayerClick(e) {
 						} else {
 							display_value = numberWithCommas(value);
 						}
+						background_color_value = color(value);
+						text_color_value = text_color(value);
+						if (display_value.length >= 8) {
+							display_value_padding = 'pl2';
+						}
+
+					} else if (value == 'Not enough data.') {
+						display_value = value;
+						display_name_width = 'w-50';
+						display_value_padding = 'pl2 pr1';
 					} else {
 						display_value = "N/A";
 					}
 	
-					popupContent += "<p class='pt2 pb2' style='background-color:"+color(value)+"; color:"+ text_color(value) +"'><span class='w-70 dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib pl3 f5 v-mid'>"+display_value+"</span></p>";
+					popupContent += "<p class='pt2 pb2' style='background-color:"+ background_color_value +"; color:"+ text_color_value +"'><span class='"+display_name_width+" dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib "+display_value_padding+" f5 v-mid'>"+display_value+"</span></p>";
 
 				}
 
@@ -285,7 +319,7 @@ function onEachFeature(feature, layer) {
 		click: onLayerClick
 	});
 
-	if (layer.feature.properties[selected_tableID].value || layer.feature.properties[selected_tableID].value == 0){
+	if (typeof layer.feature.properties[selected_tableID].value == 'number'){
 		if (selected_data_type == 'pct_format') {
 			display_value = percentFormat(layer.feature.properties[selected_tableID].value);
 		} else if (selected_data_type == 'pct') {
@@ -299,6 +333,8 @@ function onEachFeature(feature, layer) {
 		} else {
 			display_value = numberWithCommas(layer.feature.properties[selected_tableID].value);
 		}
+	} else if (layer.feature.properties[selected_tableID].value == 'Not enough data.') {
+		display_value = layer.feature.properties[selected_tableID].value;
 	} else {
 		display_value = "N/A";
 	}
