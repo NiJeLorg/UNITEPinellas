@@ -25,6 +25,10 @@ let selected_denominator;
 let selected_data_type;
 let color;
 let text_color;
+let min;
+let max;
+let display_value_min;
+let display_value_max;
 
 // check to see which value is selected in the geography drop down
 if ($('#geography-select').val()) {
@@ -124,6 +128,34 @@ function mergeDataWGeoFeatures() {
 		// create geojson
 		geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: style, onEachFeature: onEachFeature});
 		geoJsons[selected_sl].addTo(map);
+
+		// get min and max values
+		min = d3.min(unique_values);
+		max = d3.max(unique_values);
+
+		if (selected_data_type == 'pct_format') {
+			display_value_min = percentFormat(min);
+			display_value_max = percentFormat(max);
+		} else if (selected_data_type == 'pct') {
+			display_value_min = percentify(min);
+			display_value_max = percentify(max);
+		} else if (selected_data_type == 'dollar') {
+			display_value_min = dollarify(min);
+			display_value_max = dollarify(max);
+		} else if (selected_data_type == 'decimal') {
+			display_value_min = min.toFixed(2);
+			display_value_max = max.toFixed(2);			
+		} else if (selected_data_type == 'date') {
+			display_value_min = min;
+			display_value_max = max;			
+		} else {
+			display_value_min = numberWithCommas(min);
+			display_value_max = numberWithCommas(max);
+		}
+		
+		// add legend
+		legend.addTo(map);
+
 	});
 
 }
@@ -464,16 +496,11 @@ function onlyUnique(value, index, self) {
 
 legend.onAdd = function (map) {
 
-	var div = L.DomUtil.create('div', 'info legend'),
-		grades = [0, 5000, 12500, 25000, 50000, 75000, 100000, 250000],
-		labels = [];
+	var div = L.DomUtil.create('div', 'info legend');
 
 	// loop through our density intervals and generate a label with a colored square for each interval
-	for (var i = 0; i < grades.length; i++) {
-		div.innerHTML +=
-			'<i style="background:' + getColor(grades[i] + 1) + '"></i> $' +
-			grades[i] + (grades[i + 1] ? ' &ndash; $' + grades[i + 1] + '<br>' : '+');
-	}
+	div.innerHTML += 
+		'<div class="legend-child">' + display_value_min + '</div><div class="legend-child"><img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/Blues.png" alt="Blues" style="max-width:100%;" width="100%" height="14"></div><div class="legend-child">' + display_value_max + '</div>';
 
 	return div;
 };
