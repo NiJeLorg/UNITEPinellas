@@ -44,7 +44,7 @@ function initMap() {
 }
 
 function createMap() {
-	map = L.map('map').setView([27.865129, -82.678459], 11);
+	map = L.map('map').setView([27.9, -82.7], 11);
 	L.tileLayer('https://{s}.basemaps.cartocdn.com/{style}/{z}/{x}/{y}' + (L.Browser.retina ? '@2x.png' : '.png'), {
 		attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		subdomains: 'abcd',
@@ -191,7 +191,7 @@ function calcValue(properties) {
 function outlineStyle(feature) {
 	return {
 		fillColor: '#fde28e',
-		weight: 0.5,
+		weight: 1,
 		opacity: 1,
 		color: '#666',
 		fillOpacity: 0.3
@@ -207,7 +207,7 @@ function style(feature) {
 	if (typeof feature.properties[selected_tableID].value == 'number') {
 		return {
 			fillColor: color(feature.properties[selected_tableID].value),
-			weight: 0.5,
+			weight: 1,
 			opacity: 1,
 			color: '#666',
 			fillOpacity: 0.8
@@ -215,7 +215,7 @@ function style(feature) {
 	} else {
 		return {
 			fillColor: '#aaaaaa',
-			weight: 0.5,
+			weight: 1,
 			opacity: 1,
 			color: '#666',
 			fillOpacity: 0.8
@@ -292,7 +292,8 @@ function onLayerClick(e) {
 					background_color_value = '#aaa';
 					text_color_value = '#111';
 					display_name_width = 'w-70';
-					display_value_padding = 'pl3';
+					display_value_padding = 'pl1';
+					display_value_font = 'f5';
 
 					if (typeof value == 'number'){
 						if (selected_data_type == 'pct_format') {
@@ -311,7 +312,8 @@ function onLayerClick(e) {
 						background_color_value = color(value);
 						text_color_value = text_color(value);
 						if (display_value.length >= 8) {
-							display_value_padding = 'pl2';
+							display_value_padding = 'pl1';
+							display_value_font = 'f6';
 						}
 
 					} else if (value == 'Not enough data.') {
@@ -322,7 +324,7 @@ function onLayerClick(e) {
 						display_value = "N/A";
 					}
 	
-					popupContent += "<p class='pt2 pb2' style='background-color:"+ background_color_value +"; color:"+ text_color_value +"'><span class='"+display_name_width+" dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib "+display_value_padding+" f5 v-mid'>"+display_value+"</span></p>";
+					popupContent += "<p class='pt2 pb2' style='background-color:"+ background_color_value +"; color:"+ text_color_value +"'><span class='"+display_name_width+" dib v-mid f5 pl2'>"+json.parents[i].display_name+"</span><span class='dib "+display_value_padding+" "+display_value_font+" v-mid'>"+display_value+"</span></p>";
 
 				}
 
@@ -423,7 +425,7 @@ $("#issue-select").on('change', function (e) {
 	}
 
 	if (selected_category == "Demographics") {
-		selected_tableID = 'B01001';
+		selected_tableID = 'B03002';
 	}
 
 	// print list of variables
@@ -431,8 +433,7 @@ $("#issue-select").on('change', function (e) {
 	let link;
 	let padding;
 	for (let key in metadata[this.value]) {
-		const strip_key = key.split('-')[0];
-		if (/[a-zA-Z]/.test(strip_key.slice(-1))) {
+		if (metadata[this.value][key]['indent'] == true) {
 			padding = 'pl2';
 		} else {
 			padding = '';
@@ -572,6 +573,7 @@ metadata['Economics']['C23002D-1'] = {
 	'denominator': 'C23002D001',
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (Asian Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -580,6 +582,7 @@ metadata['Economics']['C23002B'] = {
 	'denominator': 'C23002B001',
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (Black or African American Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -588,6 +591,7 @@ metadata['Economics']['C23002I'] = {
 	'denominator': 'C23002I001',
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -596,6 +600,7 @@ metadata['Economics']['C23002H'] = {
 	'denominator': 'C23002H001',
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (White Alone, Not Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -612,6 +617,7 @@ metadata['Economics']['C23002D-2'] = {
 	'denominator': 'C23002D001',
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (Asian Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -620,6 +626,7 @@ metadata['Economics']['C23002B-2'] = {
 	'denominator': 'C23002B001',
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (Black or African American Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -628,6 +635,7 @@ metadata['Economics']['C23002I-2'] = {
 	'denominator': 'C23002I001',
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -636,6 +644,7 @@ metadata['Economics']['C23002H-2'] = {
 	'denominator': 'C23002H001',
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (White Alone, Not Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -652,6 +661,7 @@ metadata['Economics']['B19013D'] = {
 	'denominator': null,
 	'data_type': 'dollar',
 	'title': 'Median Household Income (Asian Alone Householders)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -660,6 +670,7 @@ metadata['Economics']['B19013B'] = {
 	'denominator': null,
 	'data_type': 'dollar',
 	'title': 'Median Household Income (Black or African American Alone Householder)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -668,6 +679,7 @@ metadata['Economics']['B19013I'] = {
 	'denominator': null,
 	'data_type': 'dollar',
 	'title': 'Median Household Income (Hispanic or Latino Householder)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -676,6 +688,7 @@ metadata['Economics']['B19013H'] = {
 	'denominator': null,
 	'data_type': 'dollar',
 	'title': 'Median Household Income (White Alone, Not Hispanic or Latino Householder)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -701,6 +714,7 @@ metadata['Economics']['B17001D'] = {
 	'denominator': 'B17001D001',
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (Asian Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -709,6 +723,7 @@ metadata['Economics']['B17001B'] = {
 	'denominator': 'B17001B001',
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (Black or African American Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -717,6 +732,7 @@ metadata['Economics']['B17001I'] = {
 	'denominator': 'B17001I001',
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -725,6 +741,7 @@ metadata['Economics']['B17001H'] = {
 	'denominator': 'B17001H001',
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (White Alone, Not Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -749,6 +766,7 @@ metadata['Economics']['B08134-1'] = {
 	'denominator': 'B08134001',
 	'data_type': 'pct',
 	'title': 'Percent Workers with 45+ Minute Car, Truck or Van Commute',
+	'indent': true,
 	'description': lorem
 }
 
@@ -757,6 +775,7 @@ metadata['Economics']['B08134-2'] = {
 	'denominator': 'B08134001',
 	'data_type': 'pct',
 	'title': 'Percent Workers with 45+ Minute Public Transit Commute',
+	'indent': true,
 	'description': lorem
 }
 
@@ -774,6 +793,7 @@ metadata['Children and Youth']['B17001D'] = {
 	'denominator': 'B17001D001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (Asian Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -782,6 +802,7 @@ metadata['Children and Youth']['B17001B'] = {
 	'denominator': 'B17001B001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (Black or African American Alone)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -790,6 +811,7 @@ metadata['Children and Youth']['B17001I'] = {
 	'denominator': 'B17001I001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -798,6 +820,7 @@ metadata['Children and Youth']['B17001H'] = {
 	'denominator': 'B17001H001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (White Alone, Not Hispanic or Latino)',
+	'indent': true,
 	'description': lorem
 }
 
@@ -811,43 +834,223 @@ metadata['Children and Youth']['B14005'] = {
 
 
 // Demographic variables
-metadata['Demographics']['B01001'] = {
-	'numerator': ['B01001001'],
+metadata['Demographics']['B03002'] = {
+	'numerator': ['B03002001'],
 	'denominator': null,
 	'data_type': 'number',
 	'title': 'Total Population',
 	'description': lorem
 }
 
+metadata['Demographics']['B03002-1'] = {
+	'numerator': ['B03002006'],
+	'denominator': 'B03002001',
+	'data_type': 'pct',
+	'title': 'Percent of Total Population Asian Alone',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B03002-2'] = {
+	'numerator': ['B03002004'],
+	'denominator': 'B03002001',
+	'data_type': 'pct',
+	'title': 'Percent of Total Population Black or African American Alone',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B03002-3'] = {
+	'numerator': ['B03002012'],
+	'denominator': 'B03002001',
+	'data_type': 'pct',
+	'title': 'Percent of Total Population Hispanic or Latino',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B03002-4'] = {
+	'numerator': ['B03002003'],
+	'denominator': 'B03002001',
+	'data_type': 'pct',
+	'title': 'Percent of Total Population White Alone, Not Hispanic or Latino',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01001'] = {
+	'numerator': ['B01001003', 'B01001004', 'B01001005', 'B01001006', 'B01001027', 'B01001028', 'B01001029', 'B01001030'],
+	'denominator': 'B01001001',
+	'data_type': 'pct',
+	'title': 'Percent of Population Under 18 Years Old',
+	'description': lorem
+}
+
 metadata['Demographics']['B01001D'] = {
-	'numerator': ['B01001D001'],
-	'denominator': null,
-	'data_type': 'number',
-	'title': 'Total Population (Asian Alone)',
+	'numerator': ['B01001D003', 'B01001D004', 'B01001D005', 'B01001D006', 'B01001D027', 'B01001D028', 'B01001D029', 'B01001D030'],
+	'denominator': 'B01001D001',
+	'data_type': 'pct',
+	'title': 'Percent of Asian Alone Population Under 18 Years Old',
+	'indent': true,
 	'description': lorem
 }
 
 metadata['Demographics']['B01001B'] = {
-	'numerator': ['B01001B001'],
-	'denominator': null,
-	'data_type': 'number',
-	'title': 'Total Population (Black or African American Alone)',
+	'numerator': ['B01001B003', 'B01001B004', 'B01001B005', 'B01001B006', 'B01001B027', 'B01001B028', 'B01001B029', 'B01001B030'],
+	'denominator': 'B01001B001',
+	'data_type': 'pct',
+	'title': 'Percent of Black or African American Alone Population Under 18 Years Old',
+	'indent': true,
 	'description': lorem
 }
 
 metadata['Demographics']['B01001I'] = {
-	'numerator': ['B01001I001'],
-	'denominator': null,
-	'data_type': 'number',
-	'title': 'Total Population (Hispanic or Latino)',
+	'numerator': ['B01001I003', 'B01001I004', 'B01001I005', 'B01001I006', 'B01001I027', 'B01001I028', 'B01001I029', 'B01001I030'],
+	'denominator': 'B01001I001',
+	'data_type': 'pct',
+	'title': 'Percent of Hispanic or Latino Population Under 18 Years Old',
+	'indent': true,
 	'description': lorem
 }
 
 metadata['Demographics']['B01001H'] = {
-	'numerator': ['B01001H001'],
+	'numerator': ['B01001H003', 'B01001H004', 'B01001H005', 'B01001H006', 'B01001H027', 'B01001H028', 'B01001H029', 'B01001H030'],
+	'denominator': 'B01001H001',
+	'data_type': 'pct',
+	'title': 'Percent of White Alone, Not Hispanic or Latino Population Under 18 Years Old',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01001-1'] = {
+	'numerator': ['B01001020', 'B01001021', 'B01001022', 'B01001023', 'B01001024', 'B01001025', 'B01001044', 'B01001045', 'B01001046', 'B01001047', 'B01001048', 'B01001049'],
+	'denominator': 'B01001001',
+	'data_type': 'pct',
+	'title': 'Percent of Population 65 Years and Older',
+	'description': lorem
+}
+
+metadata['Demographics']['B01001D-1'] = {
+	'numerator': ['B01001D014', 'B01001D015', 'B01001D016', 'B01001D029', 'B01001D030', 'B01001D031'],
+	'denominator': 'B01001D001',
+	'data_type': 'pct',
+	'title': 'Percent of Asian Alone Population 65 Years and Older',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01001B-1'] = {
+	'numerator': ['B01001B014', 'B01001B015', 'B01001B016', 'B01001B029', 'B01001B030', 'B01001B031'],
+	'denominator': 'B01001B001',
+	'data_type': 'pct',
+	'title': 'Percent of Black or African American Alone Population 65 Years and Older',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01001I-1'] = {
+	'numerator': ['B01001I014', 'B01001I015', 'B01001I016', 'B01001I029', 'B01001I030', 'B01001I031'],
+	'denominator': 'B01001I001',
+	'data_type': 'pct',
+	'title': 'Percent of Hispanic or Latino Population 65 Years and Older',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01001H-1'] = {
+	'numerator': ['B01001H014', 'B01001H015', 'B01001H016', 'B01001H029', 'B01001H030', 'B01001H031'],
+	'denominator': 'B01001H001',
+	'data_type': 'pct',
+	'title': 'Percent of White Alone, Not Hispanic or Latino Population 65 Years and Older',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01002'] = {
+	'numerator': ['B01002001'],
 	'denominator': null,
 	'data_type': 'number',
-	'title': 'Total Population (White Alone, Not Hispanic or Latino)',
+	'title': 'Median Age',
+	'description': lorem
+}
+
+metadata['Demographics']['B01002D'] = {
+	'numerator': ['B01002D001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Median Age (Asian Alone)',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01002B'] = {
+	'numerator': ['B01002B001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Median Age (Black or African American Alone)',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01002I'] = {
+	'numerator': ['B01002I001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Median Age (Hispanic or Latino)',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B01002H'] = {
+	'numerator': ['B01002H001'],
+	'denominator': null,
+	'data_type': 'number',
+	'title': 'Median Age (White Alone, Not Hispanic or Latino)',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B16005'] = {
+	'numerator': ['B16005003', 'B16005005', 'B16005010', 'B16005015', 'B16005020', 'B16005025', 'B16005027', 'B16005032', 'B16005037', 'B16005042'],
+	'denominator': 'B16005001',
+	'data_type': 'pct',
+	'title': 'Percent of Population with High English Proficiency',
+	'description': lorem
+}
+
+metadata['Demographics']['B16005D'] = {
+	'numerator': ['B16005D003', 'B16005D005', 'B16005D008'],
+	'denominator': 'B16005D001',
+	'data_type': 'pct',
+	'title': 'Percent of Asian Alone Population with High English Proficiency',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B16005B'] = {
+	'numerator': ['B16005B003', 'B16005B005', 'B16005B008'],
+	'denominator': 'B16005B001',
+	'data_type': 'pct',
+	'title': 'Percent of Black or African American Alone Population with High English Proficiency',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B16005I'] = {
+	'numerator': ['B16005I003', 'B16005I005', 'B16005I008'],
+	'denominator': 'B16005I001',
+	'data_type': 'pct',
+	'title': 'Percent of Hispanic or Latino Population with High English Proficiency',
+	'indent': true,
+	'description': lorem
+}
+
+metadata['Demographics']['B16005H'] = {
+	'numerator': ['B16005H003', 'B16005H005', 'B16005H008'],
+	'denominator': 'B16005H001',
+	'data_type': 'pct',
+	'title': 'Percent of White Alone, Not Hispanic or Latino Population with High English Proficiency',
+	'indent': true,
 	'description': lorem
 }
 
