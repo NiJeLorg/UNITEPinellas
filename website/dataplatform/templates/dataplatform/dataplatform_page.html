@@ -5,6 +5,7 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}">
 {% endblock %}
 
@@ -69,6 +70,7 @@
               <div id="dataset-metadata">
                 <h2 id="dataset-title" class="f4 f4-ns fw6 lh-solid-ns lh-title ttu light-blue"></h2>
                 <p id="dataset-description"></p>
+                <p id="dataset-source" class="f7"></p>
               </div>
             </div>
         </div>
@@ -79,12 +81,11 @@
         <div class="cf h-100">
             <div id="map" class="h-100"></div>
         </div>
-        <div class="absolute bottom-0 left-1 z-999">
+        <div class="absolute top-1 left-1 z-999">
             <select id="geography-select" class="f6 fw6 ph1 pv1 mb2 db ttu light-blue b--light-blue">
                 <option value="150">Census Block Groups</option>
-                <option value="140" selected="selected">Census Tracts</option>
-                <option value="860">Zip Codes</option>
-                <option value="795">Public Use Micro Areas</option>
+                <option value="140">Census Tracts</option>
+                <option value="860" selected="selected">Zip Codes</option>
                 <option value="160">Cities and Towns</option>
                 <option value="620">State House</option>
                 <option value="610">State Senate</option>
@@ -103,6 +104,7 @@
     </script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{% static 'js/data-explorer.js' %}"></script>
 {% endblock %}

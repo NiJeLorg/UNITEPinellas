@@ -10,7 +10,7 @@ const baseDataURL = 'https://api.censusreporter.org/1.0/data/show/latest?'
 const baseParentsURL = 'https://api.censusreporter.org/1.0/geo/tiger2018/';
 
 /* other constants */
-const legend = L.control({position: 'bottomright'});
+const legend = L.control({position: 'bottomleft'});
 
 /* variables */
 let map;
@@ -34,7 +34,7 @@ let display_value_max;
 if ($('#geography-select').val()) {
 	selected_sl = $('#geography-select').val();
 } else {
-	selected_sl = '140'; // default summary level is Census Tracts
+	selected_sl = '860'; // default summary level is Zip Code
 }
 
 
@@ -44,7 +44,13 @@ function initMap() {
 }
 
 function createMap() {
-	map = L.map('map').setView([27.9, -82.7], 11);
+	map = L.map('map',{ zoomControl: false }).setView([27.9, -82.7], 11);
+	new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
+	new L.Control.geocoder({
+		placeholder: 'Address Search',
+		showResultIcons: true,
+		geocoder: new L.Control.Geocoder.Nominatim({geocodingQueryParams: {viewbox:'-83.0,28.3,-82.3,27.5',bounded:1}})
+	  }).addTo(map);
 	L.tileLayer('https://{s}.basemaps.cartocdn.com/{style}/{z}/{x}/{y}' + (L.Browser.retina ? '@2x.png' : '.png'), {
 		attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		subdomains: 'abcd',
@@ -122,7 +128,7 @@ function mergeDataWGeoFeatures() {
 		const unique_values = values.filter(onlyUnique);
 		color = d3.scaleSequentialQuantile(unique_values, d3.interpolateBlues)
 		const sum = unique_values.reduce((a, b) => a + b, 0);
-		const avg_times_1_25 = (sum / unique_values.length)*1.25 || 0;
+		const avg_times_1_25 = (sum / unique_values.length)*1 || 0;
 		text_color = d3.scaleThreshold().domain([avg_times_1_25]).range(['#111', 'white'])
 
 		// create geojson
@@ -155,6 +161,10 @@ function mergeDataWGeoFeatures() {
 		
 		// add legend
 		legend.addTo(map);
+
+		// add sourcing info
+		$("#dataset-source").text("Source: Unites States Census Bureau, American Community Survey, " + json.release.years);
+
 
 	});
 
@@ -386,7 +396,6 @@ function populateDataset() {
 	selected_data_type = metadata[selected_category][selected_tableID]['data_type'];
 	$("#dataset-title").text(metadata[selected_category][selected_tableID]['title']);
 	$("#dataset-description").text(metadata[selected_category][selected_tableID]['description']);
-
 	// join data to geographies
 	removeGeojson();
 	updateGeography();
@@ -825,12 +834,33 @@ metadata['Children and Youth']['B17001H'] = {
 }
 
 metadata['Children and Youth']['B14005'] = {
-	'numerator': ['B14005013', 'B14005014', 'B14005027','B14005028'],
+	'numerator': ['B14005013', 'B14005014', 'B14005015', 'B14005027','B14005028', 'B14005029'],
 	'denominator': 'B14005001',
 	'data_type': 'pct',
-	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School, but in Labor Force',
+	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School',
 	'description': lorem
 }
+
+metadata['Children and Youth']['B14005-1'] = {
+	'numerator': ['B14005013', 'B14005027'],
+	'denominator': 'B14005001',
+	'data_type': 'pct',
+	'indent': true,
+	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School, but Employed',
+	'description': lorem
+}
+
+metadata['Children and Youth']['B14005-2'] = {
+	'numerator': ['B14005014', 'B14005015', 'B14005028','B14005029'],
+	'denominator': 'B14005001',
+	'data_type': 'pct',
+	'indent': true,
+	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School, and Unemployed or Not in Labor Force',
+	'description': lorem
+}
+
+//TO DO: Add Child Opportunity Index
+//query: http://data.diversitydatakids.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20from%20%22080cfe52-90aa-4925-beaa-90efb04ab7fb%22%20WHERE%20statefips%20=%20%2712%27%20AND%20countyfips%20=%20%2712103%27%20AND%20year%20=%20%272015%27
 
 
 // Demographic variables
@@ -1056,4 +1086,4 @@ metadata['Demographics']['B16005H'] = {
 
 
 // initialize
-window.onload = initMap;
+initMap();

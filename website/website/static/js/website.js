@@ -1,6 +1,3 @@
-
-window.onload = init;
-
 function init() {
   document.getElementById("hamburger").onclick = openCloseNav;
   document.getElementById("closebtn").onclick = openCloseNav;
@@ -35,3 +32,5 @@ function removeClass(ele,cls) {
         ele.className=ele.className.replace(reg,' ');
     }
 }
+
+window.onload = init;
