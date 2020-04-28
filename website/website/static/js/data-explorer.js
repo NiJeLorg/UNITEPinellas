@@ -9,6 +9,9 @@ const pcgid = '05000US12103';
 const baseDataURL = 'https://api.censusreporter.org/1.0/data/show/latest?'
 const baseParentsURL = 'https://api.censusreporter.org/1.0/geo/tiger2018/';
 
+/* COI data API constants */
+const COIBaseDataURL = 'http://data.diversitydatakids.org/api/3/action/datastore_search_sql?sql='
+
 /* other constants */
 const legend = L.control({position: 'bottomleft'});
 
@@ -61,6 +64,16 @@ function createMap() {
 }
 
 function updateGeography() {
+	// for non-ACS cases, let's ensure that we're on the correct geography
+	if (selected_tableID == 'COI') { // Child Opportunity Index
+		selected_sl = '140';
+		$('#geography-select').val('140');
+		$('#geography-select').prop("disabled", true);
+	} 
+
+	console.log(selected_sl);
+	console.log(geoFeatures[selected_sl]);
+
 	// if geography is empty, make API call and store in geojsons dictionary
 	if (isEmpty(geoFeatures[selected_sl])) {
 		// **** pull from local files ****//
@@ -78,8 +91,12 @@ function updateGeography() {
 }
 
 function updateGeojson() {
+	// is non-ACS case table selected?
+	if (selected_tableID == 'COI') {  // Child Opportunity Index
+		COIMergeDataWGeoFeatures();
+	}
 	// is table selected?
-	if (selected_tableID) {
+	else if (selected_tableID) {
 		mergeDataWGeoFeatures();
 	}
 	// check for existence of geojson
@@ -170,6 +187,83 @@ function mergeDataWGeoFeatures() {
 
 }
 
+function COIMergeDataWGeoFeatures() {
+
+	dataAPICall = COIBaseDataURL + "SELECT * FROM \"080cfe52-90aa-4925-beaa-90efb04ab7fb\" WHERE statefips = '12' AND countyfips = '12103' AND year = '2015'";
+	console.log("data API call: ", dataAPICall);
+	$.ajax({
+		url: dataAPICall,
+		dataType: 'jsonp',
+		success: function(json) {
+		  	//console.log(json);
+			let values = [];
+			let value;
+			//let properties;
+			let geoid;
+			for (let i = 0; i < json.result.records.length; i++) {
+				//console.log(json.result.records[i]);
+				geoid = json.result.records[i].geoid;
+				for (let j = 0; j < geoFeatures[selected_sl].length; j++) {
+					if (geoid == geoFeatures[selected_sl][j].properties.name) {
+						geoFeatures[selected_sl][j].properties[selected_tableID] = {}
+						geoFeatures[selected_sl][j].properties[selected_tableID].value = parseFloat(json.result.records[i].z_COI_nat);
+						//console.log(geoFeatures[selected_sl]);
+						value = geoFeatures[selected_sl][j].properties[selected_tableID].value
+						if (typeof value == 'number') {
+							values.push(value);
+						}
+					}
+				}
+			}
+
+			// create color scale
+			const unique_values = values.filter(onlyUnique);
+			color = d3.scaleSequentialQuantile(unique_values, d3.interpolateBlues)
+			const sum = unique_values.reduce((a, b) => a + b, 0);
+			const avg_times_1_25 = (sum / unique_values.length)*1 || 0;
+			text_color = d3.scaleThreshold().domain([avg_times_1_25]).range(['#111', 'white'])
+
+			// create geojson
+			geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: style, onEachFeature: onEachFeature});
+			geoJsons[selected_sl].addTo(map);
+
+			// get min and max values
+			min = d3.min(unique_values);
+			max = d3.max(unique_values);
+
+			if (selected_data_type == 'pct_format') {
+				display_value_min = percentFormat(min);
+				display_value_max = percentFormat(max);
+			} else if (selected_data_type == 'pct') {
+				display_value_min = percentify(min);
+				display_value_max = percentify(max);
+			} else if (selected_data_type == 'dollar') {
+				display_value_min = dollarify(min);
+				display_value_max = dollarify(max);
+			} else if (selected_data_type == 'decimal') {
+				display_value_min = min.toFixed(2);
+				display_value_max = max.toFixed(2);			
+			} else if (selected_data_type == 'date') {
+				display_value_min = min;
+				display_value_max = max;			
+			} else {
+				display_value_min = numberWithCommas(min);
+				display_value_max = numberWithCommas(max);
+			}
+			
+			// add legend
+			legend.addTo(map);
+
+			// add sourcing info
+			$("#dataset-source").text("Source: Institute for Child, Youth and Family Policy; The Heller School for Social Policy and Management; Brandeis University");
+
+
+		}
+	});
+
+
+}
+
 function calcValue(properties) {
 	let numerators = [];
 	let denominator;
@@ -214,7 +308,8 @@ function outlineOnEachFeature(feature, layer) {
 
 
 function style(feature) {
-	if (typeof feature.properties[selected_tableID].value == 'number') {
+	//console.log(feature);
+	if (feature.properties[selected_tableID] && typeof feature.properties[selected_tableID].value == 'number') {
 		return {
 			fillColor: color(feature.properties[selected_tableID].value),
 			weight: 1,
@@ -357,13 +452,22 @@ function onLayerClick(e) {
 function onEachFeature(feature, layer) {
 	display_value = '';
 
-	layer.on({
-		mouseover: highlightFeature,
-		mouseout: resetHighlight,
-		click: onLayerClick
-	});
+	if (selected_tableID == 'COI') {
+		layer.on({
+			mouseover: highlightFeature,
+			mouseout: resetHighlight
+		});
+	} else {
+		layer.on({
+			mouseover: highlightFeature,
+			mouseout: resetHighlight,
+			click: onLayerClick
+		});
+	}
 
-	if (typeof layer.feature.properties[selected_tableID].value == 'number'){
+
+
+	if (layer.feature.properties[selected_tableID] && typeof layer.feature.properties[selected_tableID].value == 'number') {
 		if (selected_data_type == 'pct_format') {
 			display_value = percentFormat(layer.feature.properties[selected_tableID].value);
 		} else if (selected_data_type == 'pct') {
@@ -377,7 +481,7 @@ function onEachFeature(feature, layer) {
 		} else {
 			display_value = numberWithCommas(layer.feature.properties[selected_tableID].value);
 		}
-	} else if (layer.feature.properties[selected_tableID].value == 'Not enough data.') {
+	} else if (layer.feature.properties[selected_tableID] && layer.feature.properties[selected_tableID].value == 'Not enough data.') {
 		display_value = layer.feature.properties[selected_tableID].value;
 	} else {
 		display_value = "N/A";
@@ -387,8 +491,9 @@ function onEachFeature(feature, layer) {
 	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.display_name + "</h3><p class='gray ma0'>"+ display_value +"</p>", {sticky: true, className: 'housing-tooltip', permanent: false});
 
 	//layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Title</h3><p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue  href='#0'>Report</a>");
-
-	layer.bindPopup("<img src='/static/img/loading.gif'>");
+	if (selected_tableID != 'COI') {
+		layer.bindPopup("<img src='/static/img/loading.gif'>");
+	}
 }
 
 // populate dataset
@@ -419,6 +524,8 @@ $('.topic').click(function() {
 });
 
 $("#issue-select").on('change', function (e) {
+	$('#geography-select').prop("disabled", false);
+
 	// TO DO assign default layer for each category
 	selected_category = this.value
 	if (selected_category == "Housing") {
@@ -457,6 +564,7 @@ $("#issue-select").on('change', function (e) {
 });
 
 $('#sub-nav-data-links').on('click', '.data-link', function() {
+	$('#geography-select').prop("disabled", false);
 	selected_tableID = $(this).attr('href').substring(1);
 	console.log(selected_tableID);
 
@@ -861,6 +969,14 @@ metadata['Children and Youth']['B14005-2'] = {
 
 //TO DO: Add Child Opportunity Index
 //query: http://data.diversitydatakids.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20from%20%22080cfe52-90aa-4925-beaa-90efb04ab7fb%22%20WHERE%20statefips%20=%20%2712%27%20AND%20countyfips%20=%20%2712103%27%20AND%20year%20=%20%272015%27
+
+metadata['Children and Youth']['COI'] = {
+	'numerator': ['z_COI_nat'],
+	'denominator': null,
+	'data_type': 'decimal',
+	'title': 'Child Opportunity Index',
+	'description': lorem
+}
 
 
 // Demographic variables
