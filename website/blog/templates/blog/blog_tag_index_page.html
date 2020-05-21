@@ -1,24 +1,52 @@
-{% extends "base.html" %}
+{% extends "base_white_header.html" %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailembeds_tags %}
 
-{% block body_class %}w-100 sans-serif{% endblock %}
+{% block body_class %}w-100 avenir{% endblock %}
 
 {% block content %}
-    {% if request.GET.tag|length %}
-        <h1 class="f1 lh-title">Showing pages tagged "{{ request.GET.tag }}"</h1>
-    {% endif %}
+    <!-- Intro -->
+    <div class="ph3 ph5-ns bg-white">
+        <div class="cf mw8 center">
+            <div class="pb3 pb4-ns pt1 pt2-ns mt0 light-blue w-90 center tc">
+                <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.title }}</h1>
+                {% if request.GET.tag|length %}
+                    <h2 class="f1 lh-title fw4">Showing posts tagged "{{ request.GET.tag }}"</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
     {% for post in blogpages %}
-        {% with post=post.specific %}
-            <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
-            {% image post.header_image width-1000 as header_image %}
-                <img src="{{ header_image.url }}" alt="{{ header_image.alt }}" class="w-100" />
-            <p>{{ post.intro }}</p>
-            {{ post.body|richtext }}
-        {% endwith %}
+      {% with post=post.specific %}
+      <div class="ph3 ph5-ns pt2 pt3-ns pb4 bg-white">
+        <hr />
+        <div class="cf mw9 center">
+          <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m">
+            <h3 class="f2 fw6 light-blue mb2">
+              {{ post.title }}
+            </h3>
+          </div>
+          <div class="fl pt1 pt4-ns pb1 pb2-ns w-two-thirds-l w-100-m">
+            <div class="pb2 pb2-ns mt0 h-auto">
+              {% image post.header_image width-640 height="auto" %}
+            </div>
+            <div class="mt3 f5 w-70-ns lh-copy">
+              <p>{{ post.intro|richtext }}</p>
+              <a class="f4 fw6 grow no-underline ba br2 ph4 pv2 mb2 dib light-blue" href="{% pageurl post %}">Go to post</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endwith %}
     {% empty %}
         No pages found with that tag.
     {% endfor %}
+    <div class="ph3 ph5-ns pt2 pt3-ns pb4 bg-white">
+      <div class="cf mw8 center">
+        <a class="f4 fw6 grow no-underline ba br2 ph4 pv2 mb2 mt4 dib light-blue" id="return" href="/blog">Return to Blog</a>
+        </div>
+    </div>
 
 {% endblock %}

@@ -1,23 +1,38 @@
-{% extends "base.html" %}
+{% extends "base_white_header.html" %}
 
 {% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailembeds_tags %}
 
-{% block body_class %}w-100 sans-serif{% endblock %}
+{% block body_class %}w-100 avenir{% endblock %}
 
 {% block content %}
-    <h1 class="f1 lh-title">{{ page.title }} <small class="f5 lh-copy">{{ page.date }}</small></h1>
-    {% image page.header_image width-1000 as header_image %}
-        <img src="{{ header_image.url }}" alt="{{ header_image.alt }}" class="w-100" />
-    {% if page.tags.all.count %}
-        <div class="tags">
-            <p>Topics: 
-            {% for tag in page.tags.all %}
-                <a href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
-            {% endfor %}
+    <!-- Intro -->
+    <div class="ph3 ph5-ns bg-white">
+        <div class="cf mw8 center">
+            <div class="pb3 pb4-ns pt1 pt2-ns mt0 light-blue w-90 center tc">
+                <h1 class="f-subheadline-ns f1 fw4 lh-solid-ns lh-title">{{ page.title }}</h1>
+                <h3 class="f2 fw4">{{ page.date }}</h3>
+            </div>
         </div>
-    {% endif %}
+    </div>
 
-    <div class="intro">{{ page.intro }}</div>
-    {{ page.body|richtext }}
 
+    <div class="cf mw9 center">
+        <div class="pb2 pb4-ns pt3 mt0 w-80 w-70-m w-60-l center">
+          {% image page.header_image width-1000 as header_image %}
+          <img src="{{ header_image.url }}" alt="{{ header_image.alt }}" class="w-100 mb4" />
+            {{ page.body|richtext }}
+            {% if page.tags.all.count %}
+                <div class="tags light-blue">
+                    <h4>Topics:
+                    {% for tag in page.tags.all %}
+                        <a class="light-blue" href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a>
+                    {% endfor %}
+                    </h4>
+                </div>
+            {% endif %}
+            <a class="f4 fw6 grow no-underline ba br2 ph4 pv2 mb2 mt4 dib light-blue" id="return" href="{{ page.get_parent.url }}">Return to Blog</a>
+          </div>
+      </div>
+    </div>
 {% endblock %}
