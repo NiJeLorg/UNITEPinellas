@@ -1,0 +1,16 @@
+{% extends "base_white_header.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailembeds_tags %}
+
+{% block body_class %}w-100 avenir{% endblock %}
+
+{% for post in blogpages %}
+    {% with post=post.specific %}
+        <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
+        {% image post.header_image width-1000 as header_image %}
+            <img src="{{ header_image.url }}" alt="{{ header_image.alt }}" class="w-100" />
+        <p>{{ post.intro }}</p>
+        {{ post.body|richtext }}
+    {% endwith %}
+{% endfor %}
