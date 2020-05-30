@@ -22,7 +22,9 @@
             <div class="cf mw9 center">
                 <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m">
                     <h3 class="f2 fw6 light-blue mb2">
-                        {{ post.title }}
+                        <a href="{% pageurl post %}">
+                            {{ post.title }}
+                        </a>
                     </h3>
                 </div>
                 <div class="fl pt1 pt4-ns pb1 pb2-ns w-two-thirds-l w-100-m">
