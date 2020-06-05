@@ -69,10 +69,40 @@ function updateGeography() {
 		selected_sl = '140';
 		$('#geography-select').val('140');
 		$('#geography-select').prop("disabled", true);
-	} 
+	}
 
-	console.log(selected_sl);
-	console.log(geoFeatures[selected_sl]);
+	if (selected_tableID == 'EVI' || selected_tableID == 'EVI-FIL') { // Eviction data
+		const options = [
+			{text: "Census Block Groups", value: 150},
+			{text: "Census Tracts", value: 140},
+			{text: "Cities and Towns", value: 160},
+		];
+		$('#geography-select').replaceOptions(options);
+		if (selected_sl == '140' || selected_sl == '150' || selected_sl == '160') {
+			selected_sl = selected_sl;
+			$('#geography-select').val(selected_sl);
+		} else {
+			selected_sl = '140';
+			$('#geography-select').val('140');
+		}
+
+	} else {
+		const options = [
+			{text: "Census Block Groups", value: 150},
+			{text: "Census Tracts", value: 140},
+			{text: "Zip Codes", value: 860},
+			{text: "Cities and Towns", value: 160},
+			{text: "State House", value: 620},
+			{text: "State Senate", value: 610},
+			{text: "Congressional District", value: 500},
+		];
+		$('#geography-select').replaceOptions(options);
+		$('#geography-select').val(selected_sl);
+	}
+	
+
+	//console.log(selected_sl);
+	//console.log(geoFeatures[selected_sl]);
 
 	// if geography is empty, make API call and store in geojsons dictionary
 	if (isEmpty(geoFeatures[selected_sl])) {
@@ -94,6 +124,9 @@ function updateGeojson() {
 	// is non-ACS case table selected?
 	if (selected_tableID == 'COI') {  // Child Opportunity Index
 		COIMergeDataWGeoFeatures();
+	}
+	else if (selected_tableID == 'EVI' || selected_tableID == 'EVI-FIL') {
+		EVIMergeDataWGeoFeatures();
 	}
 	// is table selected?
 	else if (selected_tableID) {
@@ -119,7 +152,7 @@ function mergeDataWGeoFeatures() {
 	// strip out '-x' from selected_tableID before passing to API
 	const strip_selected_tableID = selected_tableID.split('-')[0];
 	dataAPICall = baseDataURL + "table_ids=" + strip_selected_tableID + "&geo_ids=" + selected_sl + '|' + pcgid;
-	console.log("data API call: ", dataAPICall);
+	//console.log("data API call: ", dataAPICall);
 	d3.json(dataAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
 		let values = [];
@@ -190,7 +223,7 @@ function mergeDataWGeoFeatures() {
 function COIMergeDataWGeoFeatures() {
 
 	dataAPICall = COIBaseDataURL + "SELECT * FROM \"080cfe52-90aa-4925-beaa-90efb04ab7fb\" WHERE statefips = '12' AND countyfips = '12103' AND year = '2015'";
-	console.log("data API call: ", dataAPICall);
+	//console.log("data API call: ", dataAPICall);
 	$.ajax({
 		url: dataAPICall,
 		dataType: 'jsonp',
@@ -255,12 +288,92 @@ function COIMergeDataWGeoFeatures() {
 			legend.addTo(map);
 
 			// add sourcing info
-			$("#dataset-source").text("Source: Institute for Child, Youth and Family Policy; The Heller School for Social Policy and Management; Brandeis University");
+			$("#dataset-source").text("Source: Institute for Child, Youth and Family Policy; The Heller School for Social Policy and Management; Brandeis University, 2015");
 
 
 		}
 	});
 
+
+}
+
+function EVIMergeDataWGeoFeatures() {
+	// function to merge eviction data with geojsons
+
+	//console.log("selected_sl: ", selected_sl);
+	d3.csv(static_url + 'data/' + selected_sl + '_evictions.csv').then(function(data, error) {
+		if (error) return console.warn(error);
+		let values = [];
+		let value;
+		let properties;
+		let full_geoid;
+		//console.log(data);
+		for (let j = 0; j < data.length; j++) {
+			full_geoid = selected_sl + '00US' + data[j].GEOID;
+			//console.log(full_geoid);
+			// move varibles into an "estimate" property
+			data[j].estimate = data[j];
+			if (data[j].year == '2016') {
+				for (let i = 0; i < geoFeatures[selected_sl].length; i++) {
+					value == 0;
+					if (full_geoid == geoFeatures[selected_sl][i].properties.created_geoid) {
+						geoFeatures[selected_sl][i].properties[selected_tableID] = data[j];
+						properties = geoFeatures[selected_sl][i].properties[selected_tableID]
+						value = calcValue(properties);
+						// set value for use later
+						geoFeatures[selected_sl][i].properties[selected_tableID].value = value
+						if (typeof value == 'number') {
+							values.push(value);
+						}
+					}
+				}	
+			}
+		}
+		
+
+		// create color scale
+		const unique_values = values.filter(onlyUnique);
+		color = d3.scaleSequentialQuantile(unique_values, d3.interpolateBlues)
+		const sum = unique_values.reduce((a, b) => a + b, 0);
+		const avg_times_1_25 = (sum / unique_values.length)*1 || 0;
+		text_color = d3.scaleThreshold().domain([avg_times_1_25]).range(['#111', 'white'])
+
+		// create geojson
+		geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: style, onEachFeature: onEachFeature});
+		geoJsons[selected_sl].addTo(map);
+
+		// get min and max values
+		min = d3.min(unique_values);
+		max = d3.max(unique_values);
+
+		if (selected_data_type == 'pct_format') {
+			display_value_min = percentFormat(min);
+			display_value_max = percentFormat(max);
+		} else if (selected_data_type == 'pct') {
+			display_value_min = percentify(min);
+			display_value_max = percentify(max);
+		} else if (selected_data_type == 'dollar') {
+			display_value_min = dollarify(min);
+			display_value_max = dollarify(max);
+		} else if (selected_data_type == 'decimal') {
+			display_value_min = min.toFixed(2);
+			display_value_max = max.toFixed(2);			
+		} else if (selected_data_type == 'date') {
+			display_value_min = min;
+			display_value_max = max;			
+		} else {
+			display_value_min = numberWithCommas(min);
+			display_value_max = numberWithCommas(max);
+		}
+		
+		// add legend
+		legend.addTo(map);
+
+		// // add sourcing info
+		$("#dataset-source").text("Source: The Eviction Lab, 2016. This research uses data from The Eviction Lab at Princeton University, a project directed by Matthew Desmond and designed by Ashley Gromis, Lavar Edmonds, James Hendrickson, Katie Krywokulski, Lillian Leung, and Adam Porton. The Eviction Lab is funded by the JPB, Gates, and Ford Foundations as well as the Chan Zuckerberg Initiative. More information is found at evictionlab.org.");
+
+
+	});
 
 }
 
@@ -355,7 +468,7 @@ function onLayerClick(e) {
 
 	// call parents API
 	parentsAPICall = baseParentsURL + e.target.feature.properties.created_geoid + '/parents'
-	console.log(parentsAPICall)
+	//console.log(parentsAPICall)
 
 	d3.json(parentsAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
@@ -369,16 +482,16 @@ function onLayerClick(e) {
 		}
 		// array to comma sep string
 		const pgeoid_string = parentGeoIDs.join(",")
-		console.log(pgeoid_string);
+		//console.log(pgeoid_string);
 
 		// set up data API call for parents
 		// strip out '-x' from selected_tableID before passing to API
 		const strip_selected_tableID = selected_tableID.split('-')[0];
 		parentsDataAPICall = baseDataURL + "table_ids=" + strip_selected_tableID + "&geo_ids=" + pgeoid_string;
-		console.log(parentsDataAPICall);
+		//console.log(parentsDataAPICall);
 		d3.json(parentsDataAPICall).then(function(parents_json, parents_error) {
 			if (parents_error) return console.warn(parents_error);
-			console.log(parents_json);
+			//console.log(parents_json);
 
 			// update the popup
 			let popupContent = "<h3 class='f5 mb2 gray ttu'>" + metadata[selected_category][selected_tableID]['title'] + "</h3>";
@@ -452,7 +565,8 @@ function onLayerClick(e) {
 function onEachFeature(feature, layer) {
 	display_value = '';
 
-	if (selected_tableID == 'COI') {
+	if (selected_tableID == 'COI' || selected_tableID == 'EVI' || selected_tableID == 'EVI-FIL') {
+		console.log('mouseover')
 		layer.on({
 			mouseover: highlightFeature,
 			mouseout: resetHighlight
@@ -491,7 +605,7 @@ function onEachFeature(feature, layer) {
 	layer.bindTooltip("<h3 class='f5 ma0 gray ttu'>"+ feature.properties.display_name + "</h3><p class='gray ma0'>"+ display_value +"</p>", {sticky: true, className: 'housing-tooltip', permanent: false});
 
 	//layer.bindPopup("<h3 class='f5 mb1 gray ttu'>Title</h3><p class='gray'>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p><a class='f7 fw6 link grow no-underline ba br2 w-100 tc ph3 pv1 mb2 dib ttu light-blue  href='#0'>Report</a>");
-	if (selected_tableID != 'COI') {
+	if (selected_tableID != 'COI' && selected_tableID != 'EVI' && selected_tableID != 'EVI-FIL') {
 		layer.bindPopup("<img src='/static/img/loading.gif'>");
 	}
 }
@@ -566,7 +680,7 @@ $("#issue-select").on('change', function (e) {
 $('#sub-nav-data-links').on('click', '.data-link', function() {
 	$('#geography-select').prop("disabled", false);
 	selected_tableID = $(this).attr('href').substring(1);
-	console.log(selected_tableID);
+	//console.log(selected_tableID);
 
 	populateDataset();
 
@@ -609,7 +723,23 @@ function numberWithCommas(x) {
 
 function onlyUnique(value, index, self) { 
     return self.indexOf(value) === index;
-}	
+}
+
+(function($, window) {
+	$.fn.replaceOptions = function(options) {
+	  var self, $option;
+  
+	  this.empty();
+	  self = this;
+  
+	  $.each(options, function(index, option) {
+		$option = $("<option></option>")
+		  .attr("value", option.value)
+		  .text(option.text);
+		self.append($option);
+	  });
+	};
+  })(jQuery, window);
 
 
 legend.onAdd = function (map) {
@@ -619,7 +749,8 @@ legend.onAdd = function (map) {
 	// loop through our density intervals and generate a label with a colored square for each interval
 	div.innerHTML += 
 		'<div class="legend-child">' + display_value_min + '</div><div class="legend-child"><img src="https://raw.githubusercontent.com/d3/d3-scale-chromatic/master/img/Blues.png" alt="Blues" style="max-width:100%;" width="100%" height="14"></div><div class="legend-child">' + display_value_max + '</div>';
-
+		//'<div class="legend-child">' + display_value_min + '</div><div class="legend-child"><img src="' + static_url + 'img/blues.png" alt="Blues" style="max-width:100%;" width="100%" height="14"></div><div class="legend-child">' + display_value_max + '</div>';
+		
 	return div;
 };
 
@@ -673,6 +804,22 @@ metadata['Housing']['B25091'] = {
 	'denominator': 'B25091001',
 	'data_type': 'pct',
 	'title': 'Percentage of Cost Burdened Owner-Occupied Units (>30% Income Spent on Housing)',
+	'description': lorem
+}
+
+metadata['Housing']['EVI'] = {
+	'numerator': ['evictions'],
+	'denominator': 'population',
+	'data_type': 'pct',
+	'title': 'Eviction Rate',
+	'description': lorem
+}
+
+metadata['Housing']['EVI-FIL'] = {
+	'numerator': ['eviction-filings'],
+	'denominator': 'population',
+	'data_type': 'pct',
+	'title': 'Eviction Filing Rate',
 	'description': lorem
 }
 
@@ -967,7 +1114,7 @@ metadata['Children and Youth']['B14005-2'] = {
 	'description': lorem
 }
 
-//TO DO: Add Child Opportunity Index
+//Add Child Opportunity Index
 //query: http://data.diversitydatakids.org/api/3/action/datastore_search_sql?sql=SELECT%20*%20from%20%22080cfe52-90aa-4925-beaa-90efb04ab7fb%22%20WHERE%20statefips%20=%20%2712%27%20AND%20countyfips%20=%20%2712103%27%20AND%20year%20=%20%272015%27
 
 metadata['Children and Youth']['COI'] = {
