@@ -21,20 +21,20 @@
                 <hr class="thin">
                 <h2 class="f4 f3-ns fw6 gray ttu">Select a Topic</h2>
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Demographics">Demographics</a>
-                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Justice">Justice</a>
+                {% comment %} <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Justice">Justice</a> {% endcomment %}
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#ChildrenAndYouth">Children and Youth</a>
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Economics">Economics</a>
                 <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#Housing">Housing</a>
-                <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#CivicParticipation">Civic Participation</a>
+                {% comment %} <a class="f6 fw6 link grow no-underline ba br2 ph3 pv2 mb2 dib ttu light-blue topic" href="#CivicParticipation">Civic Participation</a> {% endcomment %}
             </div>
             <div id="controls" class="pb1 pb2-ns pt4 mt0" style="display: none;">
               <select id="issue-select" class="f6 fw6 ph1 pv1 mb2 db ttu light-blue b--light-blue">
                 <option value="Demographics">Demographics</option>
-                <option value="Justice">Justice</option>
+                {% comment %} <option value="Justice">Justice</option> {% endcomment %}
                 <option value="Children and Youth">Children and Youth</option>
                 <option value="Economics">Economics</option>
                 <option value="Housing">Housing</option>
-                <option value="Civic Participation">Civic Participation</option>
+                {% comment %} <option value="Civic Participation">Civic Participation</option> {% endcomment %}
               </select>
               <!-- TO DO: Populate Subnav buttons based on issue-select selection 
               <div id="sub-nav-buttons">
@@ -70,6 +70,8 @@
               <div id="dataset-metadata">
                 <h2 id="dataset-title" class="f4 f4-ns fw6 lh-solid-ns lh-title ttu light-blue"></h2>
                 <p id="dataset-description"></p>
+                <h3 class='dn' id="dataset-whymatters-title">Why This Matters</h3>
+                <p class='dn mb4' id="dataset-whymatters"></p>
                 <p id="dataset-source" class="f7"></p>
               </div>
             </div>

@@ -1,13 +1,13 @@
 /* Simple data platform mapping app functions */
 
 /* geographic constants */
-const baseGeoAPI = "https://api.censusreporter.org/1.0/geo/show/tiger2018?geo_ids="
+const baseGeoAPI = "https://api.censusreporter.org/1.0/geo/show/tiger2019?geo_ids="
 const pcgid = '05000US12103';
 //const sl = {'block_group':'150', 'tract':'140', 'zip_code':'860', 'puma':'795', 'place': '160', 'state_house':'620', 'state_senate':'610', 'congressional_district':'500'}
 
 /* data API constants */
 const baseDataURL = 'https://api.censusreporter.org/1.0/data/show/latest?'
-const baseParentsURL = 'https://api.censusreporter.org/1.0/geo/tiger2018/';
+const baseParentsURL = 'https://api.censusreporter.org/1.0/geo/tiger2019/';
 
 /* COI data API constants */
 const COIBaseDataURL = 'http://data.diversitydatakids.org/api/3/action/datastore_search_sql?sql='
@@ -152,7 +152,7 @@ function mergeDataWGeoFeatures() {
 	// strip out '-x' from selected_tableID before passing to API
 	const strip_selected_tableID = selected_tableID.split('-')[0];
 	dataAPICall = baseDataURL + "table_ids=" + strip_selected_tableID + "&geo_ids=" + selected_sl + '|' + pcgid;
-	//console.log("data API call: ", dataAPICall);
+	console.log("data API call: ", dataAPICall);
 	d3.json(dataAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
 		let values = [];
@@ -615,6 +615,21 @@ function populateDataset() {
 	selected_data_type = metadata[selected_category][selected_tableID]['data_type'];
 	$("#dataset-title").text(metadata[selected_category][selected_tableID]['title']);
 	$("#dataset-description").text(metadata[selected_category][selected_tableID]['description']);
+	if (metadata[selected_category][selected_tableID]['whymatters']) {
+		// show and populate why matters
+		$("#dataset-whymatters-title").addClass('db');
+		$("#dataset-whymatters-title").removeClass('dn');
+		$("#dataset-whymatters").addClass('db');
+		$("#dataset-whymatters").removeClass('dn');
+		$("#dataset-whymatters").text(metadata[selected_category][selected_tableID]['whymatters']);
+	} else {
+		// hide why matters
+		$("#dataset-whymatters-title").addClass('dn');
+		$("#dataset-whymatters-title").removeClass('db');
+		$("#dataset-whymatters").addClass('dn');
+		$("#dataset-whymatters").removeClass('db');		
+	}
+	
 	// join data to geographies
 	removeGeojson();
 	updateGeography();
@@ -764,7 +779,8 @@ metadata['Housing']['B25003'] = {
 	'denominator': 'B25003001',
 	'data_type': 'pct',
 	'title': 'Percentage Renter Occupied Housing Units',
-	'description': lorem
+	'description': 'Percentage of housing units which are renter-occupied. All occupied housing units which are not owner-occupied, whether they are rented or occupied without payment of rent, are classified as renter-occupied.',
+	'whymatters': ''
 }
 
 metadata['Housing']['B25123'] = {
@@ -772,7 +788,8 @@ metadata['Housing']['B25123'] = {
 	'denominator': 'B25123008',
 	'data_type': 'pct',
 	'title': 'Percentage of Occupied Rental Units with Substandard Conditions',
-	'description': lorem
+	'description': 'Substandard housing isn\'t just housing that\'s unattractive or outdated. It\'s housing that poses a risk to the health, safety or physical well-being of occupants, neighbors, or visitors.',
+	'whymatters': 'Substandard housing increases risk of disease, crime, social isolation and poor mental health.'
 }
 
 metadata['Housing']['B25035'] = {
@@ -780,7 +797,8 @@ metadata['Housing']['B25035'] = {
 	'denominator': null,
 	'data_type': 'date',
 	'title': 'Median Year of Housing Unit Construction',
-	'description': lorem
+	'description': 'This indicator considers the age of the housing stock and calculates the median age for all houses in an area.',
+	'whymatters': 'This is helpful in understanding the compliance with current housing construction standards and the likely need for maintenance costs.'
 }
 
 metadata['Housing']['B25071'] = {
@@ -788,7 +806,8 @@ metadata['Housing']['B25071'] = {
 	'denominator': null,
 	'data_type': 'pct_format',
 	'title': 'Median Gross Rent as a Percentage of Household Income',
-	'description': lorem
+	'description': 'This indicator reflects the percentage of household income spent on rent in an area. It is a measure of private rental housing affordability in an area.',
+	'whymatters': 'Gross rent as a percent of income is an indicator of housing affordability. Thirty percent of household income is the maximum standard people should be paying for their housing costs, leaving enough for food and other items. This 30% mark is a standard indicator used nationally to understand whether housing is affordable.'
 }
 
 metadata['Housing']['B25070'] = {
@@ -796,7 +815,8 @@ metadata['Housing']['B25070'] = {
 	'denominator': 'B25070001',
 	'data_type': 'pct',
 	'title': 'Percentage of Cost Burdened Renter-Occupied Units (>30% Income Spent on Housing)',
-	'description': lorem
+	'description': 'This indicator reflects the percentage of renter-occupied housing where more than 30% of income is spent on rent including utilities, real estate taxes, and insurance costs that are passed on to renters in increased rents.',
+	'whymatters': 'The cost of basic needs matters for financial security and housing is often one of the largest expenses families face.1 Low-income households are more likely to have larger portions of their income spent on housing, which can make it difficult to meet other basic needs.'
 }
 
 metadata['Housing']['B25091'] = {
@@ -804,7 +824,8 @@ metadata['Housing']['B25091'] = {
 	'denominator': 'B25091001',
 	'data_type': 'pct',
 	'title': 'Percentage of Cost Burdened Owner-Occupied Units (>30% Income Spent on Housing)',
-	'description': lorem
+	'description': 'This indicator reflects the percentage of owner-occupied housing where more than 30% of income is spent on housing costs including utilities, real estate taxes, and insurance costs.',
+	'whymatters': 'The cost of basic needs matters for financial security and housing is often one of the largest expenses families face.1 Low-income households are more likely to have larger portions of their income spent on housing, which can make it difficult to meet other basic needs.'
 }
 
 metadata['Housing']['EVI'] = {
@@ -812,7 +833,9 @@ metadata['Housing']['EVI'] = {
 	'denominator': 'population',
 	'data_type': 'pct',
 	'title': 'Eviction Rate',
-	'description': lorem
+	'description': 'An eviction rate is the number of evictions per 100 renter homes in an area. An eviction rate of 5% means that 5 of every 100 renter homes faced eviction in the selected area that year.',
+	'whymatters': 'The lack of affordable housing sits at the root of a host of social problems, from poverty and homelessness to educational disparities and health care. That means understanding the eviction crisis is critical to effectively addressing these problems and reducing inequality.'
+
 }
 
 metadata['Housing']['EVI-FIL'] = {
@@ -820,7 +843,8 @@ metadata['Housing']['EVI-FIL'] = {
 	'denominator': 'population',
 	'data_type': 'pct',
 	'title': 'Eviction Filing Rate',
-	'description': lorem
+	'description': 'The number of eviction filings per 100 renter homes. An eviction is a legal process in which a landlord submits a filing to the local Clerk of Courts to remove a tenant from a rental property. Evictions happen because the tenant has not paid rent, or because the tenant is habitually late on the rent. A lease may outline other reasons one can be evicted.',
+	'whymatters': ''
 }
 
 // Economics variables
@@ -829,7 +853,8 @@ metadata['Economics']['B23025-1'] = {
 	'denominator': 'B23025001',
 	'data_type': 'pct',
 	'title': 'Unemployment Rate',
-	'description': lorem
+	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
 }
 
 metadata['Economics']['C23002D-1'] = {
@@ -838,7 +863,8 @@ metadata['Economics']['C23002D-1'] = {
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (Asian Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
 }
 
 metadata['Economics']['C23002B'] = {
@@ -847,7 +873,8 @@ metadata['Economics']['C23002B'] = {
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (Black or African American Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
 }
 
 metadata['Economics']['C23002I'] = {
@@ -856,7 +883,8 @@ metadata['Economics']['C23002I'] = {
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
 }
 
 metadata['Economics']['C23002H'] = {
@@ -865,7 +893,8 @@ metadata['Economics']['C23002H'] = {
 	'data_type': 'pct',
 	'title': 'Unemployment Rate (White Alone, Not Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
 }
 
 metadata['Economics']['B23025-2'] = {
@@ -873,7 +902,8 @@ metadata['Economics']['B23025-2'] = {
 	'denominator': 'B23025001',
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force',
-	'description': lorem
+	'description': 'Persons who are neither employed nor unemployed are not in the labor force. This category includes retired persons, students, those taking care of children or other family members, and others who are neither working nor seeking work. People who are neither employed nor unemployed are not in the labor force.',
+	'whymatters': 'This data helps identify the degree to which people are discouraged or disaffected from the economic system.'
 }
 
 metadata['Economics']['C23002D-2'] = {
@@ -882,7 +912,8 @@ metadata['Economics']['C23002D-2'] = {
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (Asian Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'Persons who are neither employed nor unemployed are not in the labor force. This category includes retired persons, students, those taking care of children or other family members, and others who are neither working nor seeking work. People who are neither employed nor unemployed are not in the labor force.',
+	'whymatters': 'This data helps identify the degree to which people are discouraged or disaffected from the economic system.'
 }
 
 metadata['Economics']['C23002B-2'] = {
@@ -891,7 +922,8 @@ metadata['Economics']['C23002B-2'] = {
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (Black or African American Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'Persons who are neither employed nor unemployed are not in the labor force. This category includes retired persons, students, those taking care of children or other family members, and others who are neither working nor seeking work. People who are neither employed nor unemployed are not in the labor force.',
+	'whymatters': 'This data helps identify the degree to which people are discouraged or disaffected from the economic system.'
 }
 
 metadata['Economics']['C23002I-2'] = {
@@ -900,7 +932,8 @@ metadata['Economics']['C23002I-2'] = {
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'Persons who are neither employed nor unemployed are not in the labor force. This category includes retired persons, students, those taking care of children or other family members, and others who are neither working nor seeking work. People who are neither employed nor unemployed are not in the labor force.',
+	'whymatters': 'This data helps identify the degree to which people are discouraged or disaffected from the economic system.'
 }
 
 metadata['Economics']['C23002H-2'] = {
@@ -909,7 +942,8 @@ metadata['Economics']['C23002H-2'] = {
 	'data_type': 'pct',
 	'title': 'Percent Not in Labor Force (White Alone, Not Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'Persons who are neither employed nor unemployed are not in the labor force. This category includes retired persons, students, those taking care of children or other family members, and others who are neither working nor seeking work. People who are neither employed nor unemployed are not in the labor force.',
+	'whymatters': 'This data helps identify the degree to which people are discouraged or disaffected from the economic system.'
 }
 
 metadata['Economics']['B19013'] = {
@@ -917,7 +951,8 @@ metadata['Economics']['B19013'] = {
 	'denominator': null,
 	'data_type': 'dollar',
 	'title': 'Median Household Income',
-	'description': lorem
+	'description': 'Median household income is the income cut-off where half of the households earn more, and half earn less.',
+	'whymatters': 'The median household income is a strong indicator for a residents spending power and the economic wellbeing of the residents in an area.'
 }
 
 metadata['Economics']['B19013D'] = {
@@ -926,7 +961,8 @@ metadata['Economics']['B19013D'] = {
 	'data_type': 'dollar',
 	'title': 'Median Household Income (Asian Alone Householders)',
 	'indent': true,
-	'description': lorem
+	'description': 'Median household income is the income cut-off where half of the households earn more, and half earn less.',
+	'whymatters': 'The median household income is a strong indicator for a residents spending power and the economic wellbeing of the residents in an area.'
 }
 
 metadata['Economics']['B19013B'] = {
@@ -935,7 +971,8 @@ metadata['Economics']['B19013B'] = {
 	'data_type': 'dollar',
 	'title': 'Median Household Income (Black or African American Alone Householder)',
 	'indent': true,
-	'description': lorem
+	'description': 'Median household income is the income cut-off where half of the households earn more, and half earn less.',
+	'whymatters': 'The median household income is a strong indicator for a residents spending power and the economic wellbeing of the residents in an area.'
 }
 
 metadata['Economics']['B19013I'] = {
@@ -944,7 +981,8 @@ metadata['Economics']['B19013I'] = {
 	'data_type': 'dollar',
 	'title': 'Median Household Income (Hispanic or Latino Householder)',
 	'indent': true,
-	'description': lorem
+	'description': 'Median household income is the income cut-off where half of the households earn more, and half earn less.',
+	'whymatters': 'The median household income is a strong indicator for a residents spending power and the economic wellbeing of the residents in an area.'
 }
 
 metadata['Economics']['B19013H'] = {
@@ -953,7 +991,8 @@ metadata['Economics']['B19013H'] = {
 	'data_type': 'dollar',
 	'title': 'Median Household Income (White Alone, Not Hispanic or Latino Householder)',
 	'indent': true,
-	'description': lorem
+	'description': 'Median household income is the income cut-off where half of the households earn more, and half earn less.',
+	'whymatters': 'The median household income is a strong indicator for a residents spending power and the economic wellbeing of the residents in an area.'
 }
 
 metadata['Economics']['B19083'] = {
@@ -961,7 +1000,8 @@ metadata['Economics']['B19083'] = {
 	'denominator': null,
 	'data_type': 'decimal',
 	'title': 'Gini Index of Income Inequality',
-	'description': lorem
+	'description': 'The Gini index is a simple measure of the distribution of income across income percentiles in a population. A higher Gini index indicates greater inequality, with high income individuals receiving much larger percentages of the total income of the population.',
+	'whymatters': 'This is a quick measure of how fairly income is distributed across families in an area.'
 }
 
 
@@ -970,7 +1010,8 @@ metadata['Economics']['B17001'] = {
 	'denominator': 'B17001001',
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level',
-	'description': lorem
+	'description': 'To calculate percentage of poverty level, divide income by the poverty guideline and multiply by 100.',
+	'whymatters': 'The U.S. federal poverty level is a measure of income used by the U.S. government to determine who is eligible for subsidies, programs, and benefits.'
 }
 
 metadata['Economics']['B17001D'] = {
@@ -979,7 +1020,8 @@ metadata['Economics']['B17001D'] = {
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (Asian Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'To calculate percentage of poverty level, divide income by the poverty guideline and multiply by 100.',
+	'whymatters': 'The U.S. federal poverty level is a measure of income used by the U.S. government to determine who is eligible for subsidies, programs, and benefits.'
 }
 
 metadata['Economics']['B17001B'] = {
@@ -988,7 +1030,8 @@ metadata['Economics']['B17001B'] = {
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (Black or African American Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'To calculate percentage of poverty level, divide income by the poverty guideline and multiply by 100.',
+	'whymatters': 'The U.S. federal poverty level is a measure of income used by the U.S. government to determine who is eligible for subsidies, programs, and benefits.'
 }
 
 metadata['Economics']['B17001I'] = {
@@ -997,7 +1040,8 @@ metadata['Economics']['B17001I'] = {
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'To calculate percentage of poverty level, divide income by the poverty guideline and multiply by 100.',
+	'whymatters': 'The U.S. federal poverty level is a measure of income used by the U.S. government to determine who is eligible for subsidies, programs, and benefits.'
 }
 
 metadata['Economics']['B17001H'] = {
@@ -1006,7 +1050,8 @@ metadata['Economics']['B17001H'] = {
 	'data_type': 'pct',
 	'title': 'Percent Below Poverty Level (White Alone, Not Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'To calculate percentage of poverty level, divide income by the poverty guideline and multiply by 100.',
+	'whymatters': 'The U.S. federal poverty level is a measure of income used by the U.S. government to determine who is eligible for subsidies, programs, and benefits.'
 }
 
 metadata['Economics']['B15002'] = {
@@ -1014,7 +1059,8 @@ metadata['Economics']['B15002'] = {
 	'denominator': 'B15002001',
 	'data_type': 'pct',
 	'title': 'Percent Bachelor\'s Degree or Higher',
-	'description': lorem
+	'description': 'The percentage residents aged 25 and older disaggregated by race and ethnicity who have a Bachelor’s degree or higher.',
+	'whymatters': 'Access to educational opportunities provide a foundation for a strong and skilled work force. Equitable access to education is crucial for all residents to participate and contribute to a thriving economy.'
 }
 
 metadata['Economics']['B08134'] = {
@@ -1022,7 +1068,8 @@ metadata['Economics']['B08134'] = {
 	'denominator': 'B08134001',
 	'data_type': 'pct',
 	'title': 'Percent Workers with 45+ Minute Commute',
-	'description': lorem
+	'description': 'The percentage of people who are employed who have a commute time of 45 minutes or longer regardless of the mode of travel.',
+	'whymatters': 'A commute time of 45 minutes or longer is linked to reduced overall wellbeing including increased depression, increased obesity and increases in sleep disorders.'
 }
 
 metadata['Economics']['B08134-1'] = {
@@ -1031,7 +1078,8 @@ metadata['Economics']['B08134-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent Workers with 45+ Minute Car, Truck or Van Commute',
 	'indent': true,
-	'description': lorem
+	'description': 'The percentage of people who are employed who have a commute time of 45 minutes or longer and the mode of transportation is car, truck or van (not public transit).',
+	'whymatters': 'A commute time of 45 minutes or longer is linked to reduced overall wellbeing including increased depression, increased obesity and increases in sleep disorders.'
 }
 
 metadata['Economics']['B08134-2'] = {
@@ -1040,52 +1088,58 @@ metadata['Economics']['B08134-2'] = {
 	'data_type': 'pct',
 	'title': 'Percent Workers with 45+ Minute Public Transit Commute',
 	'indent': true,
-	'description': lorem
+	'description': 'The percentage of people who are employed who have a commute time of 45 minutes or longer and public transit is the mode of travel.',
+	'whymatters': 'A commute time of 45 minutes or longer is linked to reduced overall wellbeing including increased depression, increased obesity and increases in sleep disorders.'
 }
 
 
 metadata['Children and Youth']['B17001'] = {
-	'numerator': ['B17001004', 'B17001005', 'B17001006', 'B17001007', 'B17001008', 'B17001018', 'B17001019', 'B17001020', 'B17001021', 'B17001022', 'B17001023'],
+	'numerator': ['B17001004', 'B17001005', 'B17001006', 'B17001007', 'B17001008', 'B17001009', 'B17001018', 'B17001019', 'B17001020', 'B17001021', 'B17001022', 'B17001023'],
 	'denominator': 'B17001001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level',
-	'description': lorem
+	'description': 'Percent of children by race and ethnicity under 18 years old in families with incomes below 100% of the federal poverty level.',
+	'whymatters': 'Poverty and the associated financial stress can harm child development and limit learning opportunities. Research shows that families need income at least twice the poverty level to cover basic living expenses like food, housing, transportation and childcare.'
 }
 
 metadata['Children and Youth']['B17001D'] = {
-	'numerator': ['B17001D004', 'B17001D005', 'B17001D006', 'B17001D007', 'B17001D008', 'B17001D018', 'B17001D019', 'B17001D020', 'B17001D021', 'B17001D022', 'B17001D023'],
+	'numerator': ['B17001D004', 'B17001D005', 'B17001D006', 'B17001D007', 'B17001D008', 'B17001D009', 'B17001D018', 'B17001D019', 'B17001D020', 'B17001D021', 'B17001D022', 'B17001D023'],
 	'denominator': 'B17001D001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (Asian Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'Percent of children by race and ethnicity under 18 years old in families with incomes below 100% of the federal poverty level.',
+	'whymatters': 'Poverty and the associated financial stress can harm child development and limit learning opportunities. Research shows that families need income at least twice the poverty level to cover basic living expenses like food, housing, transportation and childcare.'
 }
 
 metadata['Children and Youth']['B17001B'] = {
-	'numerator': ['B17001B004', 'B17001B005', 'B17001B006', 'B17001B007', 'B17001B008', 'B17001B018', 'B17001B019', 'B17001B020', 'B17001B021', 'B17001B022', 'B17001B023'],
+	'numerator': ['B17001B004', 'B17001B005', 'B17001B006', 'B17001B007', 'B17001B008', 'B17001B009', 'B17001B018', 'B17001B019', 'B17001B020', 'B17001B021', 'B17001B022', 'B17001B023'],
 	'denominator': 'B17001B001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (Black or African American Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'Percent of children by race and ethnicity under 18 years old in families with incomes below 100% of the federal poverty level.',
+	'whymatters': 'Poverty and the associated financial stress can harm child development and limit learning opportunities. Research shows that families need income at least twice the poverty level to cover basic living expenses like food, housing, transportation and childcare.'
 }
 
 metadata['Children and Youth']['B17001I'] = {
-	'numerator': ['B17001I004', 'B17001I005', 'B17001I006', 'B17001I007', 'B17001I008', 'B17001I018', 'B17001I019', 'B17001I020', 'B17001I021', 'B17001I022', 'B17001I023'],
+	'numerator': ['B17001I004', 'B17001I005', 'B17001I006', 'B17001I007', 'B17001I008', 'B17001I009', 'B17001I018', 'B17001I019', 'B17001I020', 'B17001I021', 'B17001I022', 'B17001I023'],
 	'denominator': 'B17001I001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'Percent of children by race and ethnicity under 18 years old in families with incomes below 100% of the federal poverty level.',
+	'whymatters': 'Poverty and the associated financial stress can harm child development and limit learning opportunities. Research shows that families need income at least twice the poverty level to cover basic living expenses like food, housing, transportation and childcare.'
 }
 
 metadata['Children and Youth']['B17001H'] = {
-	'numerator': ['B17001H004', 'B17001H005', 'B17001H006', 'B17001H007', 'B17001H008', 'B17001H018', 'B17001H019', 'B17001H020', 'B17001H021', 'B17001H022', 'B17001H023'],
+	'numerator': ['B17001H004', 'B17001H005', 'B17001H006', 'B17001H007', 'B17001H008', 'B17001H009', 'B17001H018', 'B17001H019', 'B17001H020', 'B17001H021', 'B17001H022', 'B17001H023'],
 	'denominator': 'B17001H001',
 	'data_type': 'pct',
 	'title': 'Percent Children Under 18 Years Below Poverty Level (White Alone, Not Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'Percent of children by race and ethnicity under 18 years old in families with incomes below 100% of the federal poverty level.',
+	'whymatters': 'Poverty and the associated financial stress can harm child development and limit learning opportunities. Research shows that families need income at least twice the poverty level to cover basic living expenses like food, housing, transportation and childcare.'
 }
 
 metadata['Children and Youth']['B14005'] = {
@@ -1093,7 +1147,8 @@ metadata['Children and Youth']['B14005'] = {
 	'denominator': 'B14005001',
 	'data_type': 'pct',
 	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School',
-	'description': lorem
+	'description': 'Of all people in the population age 16-19, the percentage who are not enrolled in school and not high school graduates.',
+	'whymatters': 'This is one of several measures often described as "disconnected youth" or "opportunity youth."  Emphasis is placed upon this group because the years between the late teens and the mid-twenties are believed to be a critical period during which young people form adult identities and move toward independence.'
 }
 
 metadata['Children and Youth']['B14005-1'] = {
@@ -1102,7 +1157,8 @@ metadata['Children and Youth']['B14005-1'] = {
 	'data_type': 'pct',
 	'indent': true,
 	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School, but Employed',
-	'description': lorem
+	'description': 'Of all people in the population age 16-19, the percentage who are not enrolled in school and not high school graduates but have employment.',
+	'whymatters': 'This is one of several measures often described as "disconnected youth" or "opportunity youth."  Emphasis is placed upon this group because the years between the late teens and the mid-twenties are believed to be a critical period during which young people form adult identities and move toward independence.'
 }
 
 metadata['Children and Youth']['B14005-2'] = {
@@ -1111,7 +1167,8 @@ metadata['Children and Youth']['B14005-2'] = {
 	'data_type': 'pct',
 	'indent': true,
 	'title': 'Percent Children 16-19 Years Not Enrolled or Graduated High School, and Unemployed or Not in Labor Force',
-	'description': lorem
+	'description': 'Of all people in the population age 16-19, the percentage who are not enrolled in school and not high school graduates and do not have employment.',
+	'whymatters': 'This is one of several measures often described as "disconnected youth" or "opportunity youth."  Emphasis is placed upon this group because the years between the late teens and the mid-twenties are believed to be a critical period during which young people form adult identities and move toward independence.'
 }
 
 //Add Child Opportunity Index
@@ -1122,7 +1179,8 @@ metadata['Children and Youth']['COI'] = {
 	'denominator': null,
 	'data_type': 'decimal',
 	'title': 'Child Opportunity Index',
-	'description': lorem
+	'description': 'An index of neighborhood resources and conditions that help children develop in a healthy way. It combines data from 29 neighborhood-level indicators into a single composite measure.',
+	'whymatters': 'The Child Opportunity Index is a tool that describes and quantifies the neighborhood conditions U.S. children experience today, ranking them from lowest to highest opportunity.'
 }
 
 
@@ -1132,7 +1190,8 @@ metadata['Demographics']['B03002'] = {
 	'denominator': null,
 	'data_type': 'number',
 	'title': 'Total Population',
-	'description': lorem
+	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
 metadata['Demographics']['B03002-1'] = {
@@ -1141,7 +1200,8 @@ metadata['Demographics']['B03002-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population Asian Alone',
 	'indent': true,
-	'description': lorem
+	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
 metadata['Demographics']['B03002-2'] = {
@@ -1150,7 +1210,8 @@ metadata['Demographics']['B03002-2'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population Black or African American Alone',
 	'indent': true,
-	'description': lorem
+	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
 metadata['Demographics']['B03002-3'] = {
@@ -1159,7 +1220,8 @@ metadata['Demographics']['B03002-3'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population Hispanic or Latino',
 	'indent': true,
-	'description': lorem
+	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
 metadata['Demographics']['B03002-4'] = {
@@ -1168,7 +1230,8 @@ metadata['Demographics']['B03002-4'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population White Alone, Not Hispanic or Latino',
 	'indent': true,
-	'description': lorem
+	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
 metadata['Demographics']['B01001'] = {
@@ -1176,43 +1239,48 @@ metadata['Demographics']['B01001'] = {
 	'denominator': 'B01001001',
 	'data_type': 'pct',
 	'title': 'Percent of Population Under 18 Years Old',
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
 }
 
 metadata['Demographics']['B01001D'] = {
-	'numerator': ['B01001D003', 'B01001D004', 'B01001D005', 'B01001D006', 'B01001D027', 'B01001D028', 'B01001D029', 'B01001D030'],
+	'numerator': ['B01001D003', 'B01001D004', 'B01001D005', 'B01001D006', 'B01001D018', 'B01001D019', 'B01001D020', 'B01001D021'],
 	'denominator': 'B01001D001',
 	'data_type': 'pct',
 	'title': 'Percent of Asian Alone Population Under 18 Years Old',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
 }
 
 metadata['Demographics']['B01001B'] = {
-	'numerator': ['B01001B003', 'B01001B004', 'B01001B005', 'B01001B006', 'B01001B027', 'B01001B028', 'B01001B029', 'B01001B030'],
+	'numerator': ['B01001B003', 'B01001B004', 'B01001B005', 'B01001B006', 'B01001B018', 'B01001B019', 'B01001B020', 'B01001B021'],
 	'denominator': 'B01001B001',
 	'data_type': 'pct',
 	'title': 'Percent of Black or African American Alone Population Under 18 Years Old',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
 }
 
 metadata['Demographics']['B01001I'] = {
-	'numerator': ['B01001I003', 'B01001I004', 'B01001I005', 'B01001I006', 'B01001I027', 'B01001I028', 'B01001I029', 'B01001I030'],
+	'numerator': ['B01001I003', 'B01001I004', 'B01001I005', 'B01001I006', 'B01001I018', 'B01001I019', 'B01001I020', 'B01001I021'],
 	'denominator': 'B01001I001',
 	'data_type': 'pct',
 	'title': 'Percent of Hispanic or Latino Population Under 18 Years Old',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
 }
 
 metadata['Demographics']['B01001H'] = {
-	'numerator': ['B01001H003', 'B01001H004', 'B01001H005', 'B01001H006', 'B01001H027', 'B01001H028', 'B01001H029', 'B01001H030'],
+	'numerator': ['B01001H003', 'B01001H004', 'B01001H005', 'B01001H006', 'B01001H018', 'B01001H019', 'B01001H020', 'B01001H021'],
 	'denominator': 'B01001H001',
 	'data_type': 'pct',
 	'title': 'Percent of White Alone, Not Hispanic or Latino Population Under 18 Years Old',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
 }
 
 metadata['Demographics']['B01001-1'] = {
@@ -1220,7 +1288,8 @@ metadata['Demographics']['B01001-1'] = {
 	'denominator': 'B01001001',
 	'data_type': 'pct',
 	'title': 'Percent of Population 65 Years and Older',
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
 metadata['Demographics']['B01001D-1'] = {
@@ -1229,7 +1298,8 @@ metadata['Demographics']['B01001D-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Asian Alone Population 65 Years and Older',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
 metadata['Demographics']['B01001B-1'] = {
@@ -1238,7 +1308,8 @@ metadata['Demographics']['B01001B-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Black or African American Alone Population 65 Years and Older',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
 metadata['Demographics']['B01001I-1'] = {
@@ -1247,7 +1318,8 @@ metadata['Demographics']['B01001I-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Hispanic or Latino Population 65 Years and Older',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
 metadata['Demographics']['B01001H-1'] = {
@@ -1256,7 +1328,8 @@ metadata['Demographics']['B01001H-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of White Alone, Not Hispanic or Latino Population 65 Years and Older',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
 metadata['Demographics']['B01002'] = {
@@ -1264,7 +1337,8 @@ metadata['Demographics']['B01002'] = {
 	'denominator': null,
 	'data_type': 'number',
 	'title': 'Median Age',
-	'description': lorem
+	'description': 'The age that divides a population into two numerically equally sized groups - that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. This number is calculated by race and ethnicity as well.',
+	'whymatters': 'Median age provides an important single indicator of the age distribution of a population. When race and ethnicity are factored in the median age difference has important implications for policies related labor force, education healthcare and more.'
 }
 
 metadata['Demographics']['B01002D'] = {
@@ -1273,7 +1347,8 @@ metadata['Demographics']['B01002D'] = {
 	'data_type': 'number',
 	'title': 'Median Age (Asian Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'The age that divides a population into two numerically equally sized groups - that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. This number is calculated by race and ethnicity as well.',
+	'whymatters': 'Median age provides an important single indicator of the age distribution of a population. When race and ethnicity are factored in the median age difference has important implications for policies related labor force, education healthcare and more.'
 }
 
 metadata['Demographics']['B01002B'] = {
@@ -1282,7 +1357,8 @@ metadata['Demographics']['B01002B'] = {
 	'data_type': 'number',
 	'title': 'Median Age (Black or African American Alone)',
 	'indent': true,
-	'description': lorem
+	'description': 'The age that divides a population into two numerically equally sized groups - that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. This number is calculated by race and ethnicity as well.',
+	'whymatters': 'Median age provides an important single indicator of the age distribution of a population. When race and ethnicity are factored in the median age difference has important implications for policies related labor force, education healthcare and more.'
 }
 
 metadata['Demographics']['B01002I'] = {
@@ -1291,7 +1367,8 @@ metadata['Demographics']['B01002I'] = {
 	'data_type': 'number',
 	'title': 'Median Age (Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'The age that divides a population into two numerically equally sized groups - that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. This number is calculated by race and ethnicity as well.',
+	'whymatters': 'Median age provides an important single indicator of the age distribution of a population. When race and ethnicity are factored in the median age difference has important implications for policies related labor force, education healthcare and more.'
 }
 
 metadata['Demographics']['B01002H'] = {
@@ -1300,7 +1377,8 @@ metadata['Demographics']['B01002H'] = {
 	'data_type': 'number',
 	'title': 'Median Age (White Alone, Not Hispanic or Latino)',
 	'indent': true,
-	'description': lorem
+	'description': 'The age that divides a population into two numerically equally sized groups - that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. This number is calculated by race and ethnicity as well.',
+	'whymatters': 'Median age provides an important single indicator of the age distribution of a population. When race and ethnicity are factored in the median age difference has important implications for policies related labor force, education healthcare and more.'
 }
 
 metadata['Demographics']['B16005'] = {
@@ -1317,7 +1395,8 @@ metadata['Demographics']['B16005D'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Asian Alone Population with High English Proficiency',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
 metadata['Demographics']['B16005B'] = {
@@ -1326,7 +1405,8 @@ metadata['Demographics']['B16005B'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Black or African American Alone Population with High English Proficiency',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
 metadata['Demographics']['B16005I'] = {
@@ -1335,7 +1415,8 @@ metadata['Demographics']['B16005I'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Hispanic or Latino Population with High English Proficiency',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
 metadata['Demographics']['B16005H'] = {
@@ -1344,7 +1425,8 @@ metadata['Demographics']['B16005H'] = {
 	'data_type': 'pct',
 	'title': 'Percent of White Alone, Not Hispanic or Latino Population with High English Proficiency',
 	'indent': true,
-	'description': lorem
+	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
 
