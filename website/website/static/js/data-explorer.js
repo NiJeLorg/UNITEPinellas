@@ -402,6 +402,12 @@ function calcValue(properties) {
 	} else {
 		value = num;
 	}
+	// special case for dates -- if date = 0, replace value with 'Not enough data.'
+	if (selected_data_type == 'date') {
+		if (num < 1800) {
+			value = 'Not enough data.'
+		}
+	}
 	return value;
 }
 
@@ -854,7 +860,7 @@ metadata['Economics']['B23025-1'] = {
 	'data_type': 'pct',
 	'title': 'Unemployment Rate',
 	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
-	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes morale, and reduces an economy\'s output. It is a gross measure of economic challenges.'
 }
 
 metadata['Economics']['C23002D-1'] = {
@@ -864,7 +870,7 @@ metadata['Economics']['C23002D-1'] = {
 	'title': 'Unemployment Rate (Asian Alone)',
 	'indent': true,
 	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
-	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes morale, and reduces an economy\'s output. It is a gross measure of economic challenges.'
 }
 
 metadata['Economics']['C23002B'] = {
@@ -874,7 +880,7 @@ metadata['Economics']['C23002B'] = {
 	'title': 'Unemployment Rate (Black or African American Alone)',
 	'indent': true,
 	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
-	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes morale, and reduces an economy\'s output. It is a gross measure of economic challenges.'
 }
 
 metadata['Economics']['C23002I'] = {
@@ -884,7 +890,7 @@ metadata['Economics']['C23002I'] = {
 	'title': 'Unemployment Rate (Hispanic or Latino)',
 	'indent': true,
 	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
-	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes morale, and reduces an economy\'s output. It is a gross measure of economic challenges.'
 }
 
 metadata['Economics']['C23002H'] = {
@@ -894,7 +900,7 @@ metadata['Economics']['C23002H'] = {
 	'title': 'Unemployment Rate (White Alone, Not Hispanic or Latino)',
 	'indent': true,
 	'description': 'The unemployment rate is the percent of the labor force that is jobless. It is a lagging indicator, meaning that it generally rises or falls in the wake of changing economic conditions, rather than anticipating them.',
-	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes employee morale, and reduces an economy\'s output.'
+	'whymatters': 'Unemployment adversely affects the disposable income of families, erodes purchasing power, diminishes morale, and reduces an economy\'s output. It is a gross measure of economic challenges.'
 }
 
 metadata['Economics']['B23025-2'] = {
@@ -1180,7 +1186,7 @@ metadata['Children and Youth']['COI'] = {
 	'data_type': 'decimal',
 	'title': 'Child Opportunity Index',
 	'description': 'An index of neighborhood resources and conditions that help children develop in a healthy way. It combines data from 29 neighborhood-level indicators into a single composite measure.',
-	'whymatters': 'The Child Opportunity Index is a tool that describes and quantifies the neighborhood conditions U.S. children experience today, ranking them from lowest to highest opportunity.'
+	'whymatters': 'The Child Opportunity Index is a tool that describes and quantifies the neighborhood conditions U.S. children experience today. The higher numbers indicate that there are more neighborhood resources and conditions that tend to increase childhood opportunity. (An index has a tendency to reduce nuance and may perpetuate certain narratives.)'
 }
 
 
@@ -1200,7 +1206,7 @@ metadata['Demographics']['B03002-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population Asian Alone',
 	'indent': true,
-	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'description': 'The percent of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
 	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
@@ -1210,7 +1216,7 @@ metadata['Demographics']['B03002-2'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population Black or African American Alone',
 	'indent': true,
-	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'description': 'The percent of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
 	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
@@ -1220,7 +1226,7 @@ metadata['Demographics']['B03002-3'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population Hispanic or Latino',
 	'indent': true,
-	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'description': 'The percent of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
 	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
@@ -1230,7 +1236,7 @@ metadata['Demographics']['B03002-4'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Total Population White Alone, Not Hispanic or Latino',
 	'indent': true,
-	'description': 'The actual count of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
+	'description': 'The percent of the total population of an area by racial and ethnic group. This count uses the racial and ethnic labels, categories, and definitions provided by the U.S. Census Bureau.',
 	'whymatters': 'When changes in race and ethnicity are measured over time, this can influence issues and policies related to securing the overall social and economic well-being.'
 }
 
@@ -1240,7 +1246,7 @@ metadata['Demographics']['B01001'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Population Under 18 Years Old',
 	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
-	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
+	'whymatters': 'Measuring population growth and diversity is important for anticipating how best to support youth as community assets and contributors to wellbeing and the ways that education can respond to the changes in population diversity of youth in the county.'
 }
 
 metadata['Demographics']['B01001D'] = {
@@ -1249,8 +1255,8 @@ metadata['Demographics']['B01001D'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Asian Alone Population Under 18 Years Old',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
-	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
+	'description': 'Of the total count of the population that is Asian, the percentage who are children younger than age 18.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating how best to support youth as community assets and contributors to wellbeing and the ways that education can respond to the changes in population diversity of youth in the county.'
 }
 
 metadata['Demographics']['B01001B'] = {
@@ -1259,8 +1265,8 @@ metadata['Demographics']['B01001B'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Black or African American Alone Population Under 18 Years Old',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
-	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
+	'description': 'Of the total count of the population that is Black, the percentage who are children younger than age 18.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating how best to support youth as community assets and contributors to wellbeing and the ways that education can respond to the changes in population diversity of youth in the county.'
 }
 
 metadata['Demographics']['B01001I'] = {
@@ -1269,8 +1275,8 @@ metadata['Demographics']['B01001I'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Hispanic or Latino Population Under 18 Years Old',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
-	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
+	'description': 'Of the total count of the population that is Hispanic or Latino, the percentage who are children younger than age 18.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating how best to support youth as community assets and contributors to wellbeing and the ways that education can respond to the changes in population diversity of youth in the county.'
 }
 
 metadata['Demographics']['B01001H'] = {
@@ -1279,8 +1285,8 @@ metadata['Demographics']['B01001H'] = {
 	'data_type': 'pct',
 	'title': 'Percent of White Alone, Not Hispanic or Latino Population Under 18 Years Old',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are children younger than age 18 by race and ethnicity.',
-	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of education and the development of youth as community assets and contributors to wellbeing.'
+	'description': 'Of the total count of the population that is White, the percentage who are children younger than age 18.',
+	'whymatters': 'Measuring population growth and diversity is important for anticipating how best to support youth as community assets and contributors to wellbeing and the ways that education can respond to the changes in population diversity of youth in the county.'
 }
 
 metadata['Demographics']['B01001-1'] = {
@@ -1298,7 +1304,7 @@ metadata['Demographics']['B01001D-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Asian Alone Population 65 Years and Older',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'description': 'Of the total count of the population that is Asian, the percentage who are adults aged 65 and older.',
 	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
@@ -1308,7 +1314,7 @@ metadata['Demographics']['B01001B-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Black or African American Alone Population 65 Years and Older',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'description': 'Of the total count of the population that is Black or African American, the percentage who are adults aged 65 and older.',
 	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
@@ -1318,7 +1324,7 @@ metadata['Demographics']['B01001I-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Hispanic or Latino Population 65 Years and Older',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'description': 'Of the total count of the population that is Hispanic or Latino, the percentage who are adults aged 65 and older.',
 	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
@@ -1328,7 +1334,7 @@ metadata['Demographics']['B01001H-1'] = {
 	'data_type': 'pct',
 	'title': 'Percent of White Alone, Not Hispanic or Latino Population 65 Years and Older',
 	'indent': true,
-	'description': 'Of the total count of the population, the percentage who are adults aged 65 and older by race and ethnicity.',
+	'description': 'Of the total count of the population that is White alone, the percentage who are adults aged 65 and older.',
 	'whymatters': 'Measuring population growth and diversity is important for anticipating the needs of an aging population and its cultural nuances and the development of older adults as resources and assets for community thriving.'
 }
 
@@ -1386,7 +1392,8 @@ metadata['Demographics']['B16005'] = {
 	'denominator': 'B16005001',
 	'data_type': 'pct',
 	'title': 'Percent of Population with High English Proficiency',
-	'description': lorem
+	'description': 'The percentage of the total population who have high English language proficiency.',
+	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
 metadata['Demographics']['B16005D'] = {
@@ -1395,7 +1402,7 @@ metadata['Demographics']['B16005D'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Asian Alone Population with High English Proficiency',
 	'indent': true,
-	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'description': 'Of the total population that is Asian, the percentage by race and ethnicity who have high English language proficiency.',
 	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
@@ -1405,7 +1412,7 @@ metadata['Demographics']['B16005B'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Black or African American Alone Population with High English Proficiency',
 	'indent': true,
-	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'description': 'Of the total population that is Black or African American, the percentage by race and ethnicity who have high English language proficiency.',
 	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
@@ -1415,7 +1422,7 @@ metadata['Demographics']['B16005I'] = {
 	'data_type': 'pct',
 	'title': 'Percent of Hispanic or Latino Population with High English Proficiency',
 	'indent': true,
-	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'description': 'Of the total population that is Hispanic or Latino, the percentage by race and ethnicity who have high English language proficiency.',
 	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
@@ -1425,7 +1432,7 @@ metadata['Demographics']['B16005H'] = {
 	'data_type': 'pct',
 	'title': 'Percent of White Alone, Not Hispanic or Latino Population with High English Proficiency',
 	'indent': true,
-	'description': 'Of the total population, the percentage by race and ethnicity who have high English language proficiency.',
+	'description': 'Of the total population White alone, the percentage by race and ethnicity who have high English language proficiency.',
 	'whymatters': 'An inclusive place fosters a supportive environment for immigrants to thrive economically and socially. Investing in community resources and infrastructure that support immigrants with different linguistic backgrounds will help to integrate the county’s new Americans and grow the economy for everyone.'
 }
 
