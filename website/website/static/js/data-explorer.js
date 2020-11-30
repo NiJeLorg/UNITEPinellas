@@ -32,6 +32,7 @@ let min;
 let max;
 let display_value_min;
 let display_value_max;
+let background_map;
 
 // check to see which value is selected in the geography drop down
 if ($('#geography-select').val()) {
@@ -54,13 +55,16 @@ function createMap() {
 		showResultIcons: true,
 		geocoder: new L.Control.Geocoder.Nominatim({geocodingQueryParams: {viewbox:'-83.0,28.3,-82.3,27.5',bounded:1}})
 	  }).addTo(map);
-	L.tileLayer('https://{s}.basemaps.cartocdn.com/{style}/{z}/{x}/{y}' + (L.Browser.retina ? '@2x.png' : '.png'), {
+	background_map = L.tileLayer('https://{s}.basemaps.cartocdn.com/{style}/{z}/{x}/{y}' + (L.Browser.retina ? '@2x.png' : '.png'), {
 		attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
 		subdomains: 'abcd',
 		style: 'light_all',
 		maxZoom: 15,
 		minZoom: 10
-	}).addTo(map);
+	});
+	background_map.addTo(map);
+
+
 }
 
 function updateGeography() {
@@ -108,6 +112,7 @@ function updateGeography() {
 	if (isEmpty(geoFeatures[selected_sl])) {
 		// **** pull from local files ****//
 		geoFile = static_url + 'data/' + selected_sl + '.geojson';
+		console.log(geoFile);
 		d3.json(geoFile).then(function(json, error) {
 			if (error) return console.warn(error);
 			geoFeatures[selected_sl] = json.features;
@@ -134,7 +139,9 @@ function updateGeojson() {
 	}
 	// check for existence of geojson
 	else if (!map.hasLayer(geoJsons[selected_sl])) {
+		console.log(geoFeatures[selected_sl]);
 		geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: outlineStyle, onEachFeature: outlineOnEachFeature});
+		console.log(geoJsons[selected_sl]);
 		geoJsons[selected_sl].addTo(map);
 	}
 
@@ -142,7 +149,10 @@ function updateGeojson() {
 
 function removeGeojson() {
 	if (map.hasLayer(geoJsons[selected_sl])) {
-		map.removeLayer(geoJsons[selected_sl]);
+		map.eachLayer(function(layer){
+			map.removeLayer(layer);
+		});
+		background_map.addTo(map);
 	}
 }
 
@@ -213,7 +223,7 @@ function mergeDataWGeoFeatures() {
 		legend.addTo(map);
 
 		// add sourcing info
-		$("#dataset-source").text("Source: Unites States Census Bureau, American Community Survey, " + json.release.years);
+		$("#dataset-source").text("Source: United States Census Bureau, American Community Survey, " + json.release.years);
 
 
 	});
@@ -578,9 +588,10 @@ function onEachFeature(feature, layer) {
 			mouseout: resetHighlight
 		});
 	} else {
+		console.log('mouseover')
 		layer.on({
-			mouseover: highlightFeature,
-			mouseout: resetHighlight,
+			// mouseover: highlightFeature,
+			// mouseout: resetHighlight,
 			click: onLayerClick
 		});
 	}
@@ -1065,7 +1076,7 @@ metadata['Economics']['B15002'] = {
 	'denominator': 'B15002001',
 	'data_type': 'pct',
 	'title': 'Percent Bachelor\'s Degree or Higher',
-	'description': 'The percentage residents aged 25 and older disaggregated by race and ethnicity who have a Bachelor’s degree or higher.',
+	'description': 'The percentage residents aged 25 and older who have a Bachelor’s degree or higher.',
 	'whymatters': 'Access to educational opportunities provide a foundation for a strong and skilled work force. Equitable access to education is crucial for all residents to participate and contribute to a thriving economy.'
 }
 
@@ -1438,4 +1449,4 @@ metadata['Demographics']['B16005H'] = {
 
 
 // initialize
-initMap();
+window.onload = initMap();
