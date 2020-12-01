@@ -103,16 +103,11 @@ function updateGeography() {
 		$('#geography-select').replaceOptions(options);
 		$('#geography-select').val(selected_sl);
 	}
-	
-
-	//console.log(selected_sl);
-	//console.log(geoFeatures[selected_sl]);
 
 	// if geography is empty, make API call and store in geojsons dictionary
 	if (isEmpty(geoFeatures[selected_sl])) {
 		// **** pull from local files ****//
 		geoFile = static_url + 'data/' + selected_sl + '.geojson';
-		console.log(geoFile);
 		d3.json(geoFile).then(function(json, error) {
 			if (error) return console.warn(error);
 			geoFeatures[selected_sl] = json.features;
@@ -139,9 +134,7 @@ function updateGeojson() {
 	}
 	// check for existence of geojson
 	else if (!map.hasLayer(geoJsons[selected_sl])) {
-		console.log(geoFeatures[selected_sl]);
 		geoJsons[selected_sl] = L.geoJSON(geoFeatures[selected_sl], {style: outlineStyle, onEachFeature: outlineOnEachFeature});
-		console.log(geoJsons[selected_sl]);
 		geoJsons[selected_sl].addTo(map);
 	}
 
@@ -149,10 +142,11 @@ function updateGeojson() {
 
 function removeGeojson() {
 	if (map.hasLayer(geoJsons[selected_sl])) {
-		map.eachLayer(function(layer){
-			map.removeLayer(layer);
-		});
-		background_map.addTo(map);
+		map.removeLayer(geoJsons[selected_sl]);
+		// map.eachLayer(function(layer){
+		// 	map.removeLayer(layer);
+		// });
+		// background_map.addTo(map);
 	}
 }
 
@@ -162,7 +156,7 @@ function mergeDataWGeoFeatures() {
 	// strip out '-x' from selected_tableID before passing to API
 	const strip_selected_tableID = selected_tableID.split('-')[0];
 	dataAPICall = baseDataURL + "table_ids=" + strip_selected_tableID + "&geo_ids=" + selected_sl + '|' + pcgid;
-	console.log("data API call: ", dataAPICall);
+	//console.log("data API call: ", dataAPICall);
 	d3.json(dataAPICall).then(function(json, error) {
 		if (error) return console.warn(error);
 		let values = [];
@@ -582,16 +576,14 @@ function onEachFeature(feature, layer) {
 	display_value = '';
 
 	if (selected_tableID == 'COI' || selected_tableID == 'EVI' || selected_tableID == 'EVI-FIL') {
-		console.log('mouseover')
 		layer.on({
 			mouseover: highlightFeature,
 			mouseout: resetHighlight
 		});
 	} else {
-		console.log('mouseover')
 		layer.on({
-			// mouseover: highlightFeature,
-			// mouseout: resetHighlight,
+			mouseover: highlightFeature,
+			mouseout: resetHighlight,
 			click: onLayerClick
 		});
 	}
@@ -712,10 +704,7 @@ $("#issue-select").on('change', function (e) {
 $('#sub-nav-data-links').on('click', '.data-link', function() {
 	$('#geography-select').prop("disabled", false);
 	selected_tableID = $(this).attr('href').substring(1);
-	//console.log(selected_tableID);
-
 	populateDataset();
-
 });
 
 
