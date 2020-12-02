@@ -10,7 +10,7 @@ const baseDataURL = 'https://api.censusreporter.org/1.0/data/show/latest?'
 const baseParentsURL = 'https://api.censusreporter.org/1.0/geo/tiger2019/';
 
 /* COI data API constants */
-const COIBaseDataURL = 'http://data.diversitydatakids.org/api/3/action/datastore_search_sql?sql='
+const COIBaseDataURL = '//data.diversitydatakids.org/api/3/action/datastore_search_sql?sql='
 
 /* other constants */
 const legend = L.control({position: 'bottomleft'});
