@@ -7,7 +7,7 @@
 
 {% for post in blogpages %}
     {% with post=post.specific %}
-        <h2><a href="{% post.url %}">{{ post.title }}</a></h2>
+        <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
         {% image post.header_image width-1000 as header_image %}
             <img src="{{ header_image.url }}" alt="{{ header_image.alt }}" class="w-100" />
         <p>{{ post.intro }}</p>
