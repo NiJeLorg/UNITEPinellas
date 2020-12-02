@@ -22,7 +22,7 @@
             <div class="cf mw9 center">
                 <div class="fl w-third-l w-100-m pr5-l pr0-m tr-l tc-m">
                     <h3 class="f2 fw6 mb2">
-                        <a class="light-blue no-underline" href="{% pageurl post %}">
+                        <a class="light-blue no-underline" href="{% post.url %}">
                             {{ post.title }}
                         </a>
                     </h3>
@@ -33,7 +33,7 @@
                     </div>
                     <div class="mt3 f5 w-70-ns lh-copy">
                         <p>{{ post.intro|richtext }}</p>
-                        <a class="f4 fw6 grow no-underline ba br2 ph4 pv2 mb2 dib light-blue" href="{% pageurl post %}">Go to post</a>
+                        <a class="f4 fw6 grow no-underline ba br2 ph4 pv2 mb2 dib light-blue" href="{% post.url %}">Go to post</a>
                     </div>
                 </div>
             </div>
